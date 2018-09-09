@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+
+  <title>
+    
+      Fish Riddle &middot; xfbs:blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">-->
+  <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet">
+
+  <!-- MathJaX -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="/feed.xml" title="xfbs:blog" />
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/">
+          <h2 class="nav-title">xfbs:blog</h2>
+        </a>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/">Posts</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    
+      <br>
+      <time datetime="2017-07-26 00:00:00 +0200">July 26, 2017</time>
+    
+  </div>
+  <h1 class="post-title">Fish Riddle</h1>
+  <div class="post-line"></div>
+
+  <p>The internet is full of distractions, and unfortunately, I am not always impervious to all of them. Some of them can lead to interesting results. Today, my distraction came in the shape of a riddle from a riddle from a <abbr>TED</abbr>-Ed video, which got me to explore my (rusty, but still somewhat present) math skills.</p>
+
+<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>
+<div class="embed-container">    <iframe title="YouTube video player" width="640" height="390" src="//www.youtube.com/embed/" frameborder="0" allowfullscreen=""></iframe></div>
+
+<p>Now, I was excited to learn about the puzzle to see if I could use programming (I was thinking of a constraint solver or possibly just brute-forcing it) to solve it. But alas, it turns out that it’s just solvable with plain maths 🤷🏽‍♀️. So let’s dive in and see what we can do here.</p>
+
+<h2 id="the-problem">The problem</h2>
+
+<p>You can watch the video to get the story of the puzzle, but it breaks down like this: you have three quadrants, each with a number of fish tanks and sharks in it. You know how many there are in both the first and second quadrants, and you must find out how many there are in the third quadrant.</p>
+
+<p>So let’s first introduce a number of variables to help is keep track of things. We define:</p>
+<ul>
+  <li><script type="math/tex">s_i</script> as the number of creatures in sector <script type="math/tex">i</script>,</li>
+  <li><script type="math/tex">h_i</script> as the number of sharks in sector <script type="math/tex">i</script>,</li>
+  <li><script type="math/tex">f_i</script> as the number of fish in sector <script type="math/tex">i</script>,</li>
+  <li><script type="math/tex">t_i</script> as the number of fish per tank in sector <script type="math/tex">i</script>,</li>
+  <li><script type="math/tex">n_i</script> as the number of fish tanks in sector <script type="math/tex">i</script>.</li>
+</ul>
+
+<h2 id="the-constraints">The constraints</h2>
+
+<p>There are six comstraints given in the puzzle.</p>
+
+<ol>
+  <li><strong>There are 50 creatures in total,</strong> including sharks and fish.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+f_i & = & n_i t_i\\
+s_i & = & h_i f_i\\
+\sum_{i=1}^{3} s_i & = & 50
+\end{array} %]]></script>
+
+<ol>
+  <li><strong>Each sector has anywhere from one to seven sharks, with no two sectors
+having the same nmber of sharks</strong>.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rl}
+\forall i \in \{1, 2, 3\}: & 1 \leq h_i \leq 7\\
+\forall i, j \in \{1, 2, 3\}: & h_i \neq h_j
+\end{array} %]]></script>
+
+<ol>
+  <li><strong>Each tank has an equal number of fish</strong>.
+<em>Since this is true, we will just use <script type="math/tex">t</script> to refer to any of <script type="math/tex">t_i</script>, simce they are all the same</em>.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rl}
+\forall i, j \in \{1, 2, 3\}: & t_i = t_j
+\end{array} %]]></script>
+
+<ol>
+  <li><strong>In total, there are 13 or fewer fish tanks</strong>.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+\sum_{i=1}^{3} n_i & \leq & 13
+\end{array} %]]></script>
+
+<ol>
+  <li><strong>Sector Alpha has two sharks and four tanks</strong>.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+h_1 & = & 2\\
+n_1 & = & 4
+\end{array} %]]></script>
+
+<ol>
+  <li><strong>Sector Beta has four sharks and two tanks</strong>.</li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+h_2 & = & 4\\
+n_2 & = & 2
+\end{array} %]]></script>
+
+<h2 id="solution">Solution</h2>
+
+<p>The objective for us is to find both the values of <script type="math/tex">t</script>, <script type="math/tex">h_3</script> and <script type="math/tex">n_3</script>. To do this, I started out by using the given constraints to find the number of possible values for each of them.</p>
+
+<p>Applying the given constraint #2, we can limit the search space for <script type="math/tex">h_3</script> easily.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+h_3 & \in & \{ x \in \mathbb{N} | 1 \leq x \leq 7, \forall i \in \{1, 2\}: x \neq h_i\}\\
+h_3 & \in & \{1, 3, 5, 6, 7\}
+\end{array} %]]></script>
+
+<p>Similarly, using the given constraint #3, we can limit the search space for <script type="math/tex">n_3</script> easily.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+n_3 & \in & \{ x \in \mathbb{N} | 0 \leq x \leq \sum_{i=1}^{2} n_i\}\\
+n_3 & \in & \{0, 1, 2, 3, 4, 5, 6, 7\}
+\end{array} %]]></script>
+
+<p>Finding out the search space for <script type="math/tex">t</script> is unfortunately not that simple. First, we need to know how many creatures are currently accounted for.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+\sum_{i=1}^{2} s_i & = & 6 + 6t\\
+\end{array} %]]></script>
+
+<p>From constraint 1, we know that there are 50 creatures. Thus, from the amount of creatures we have right now and from that, we can calculate how many are not accounted for yet, <script type="math/tex">r</script> (for <em>rest</em>). We also know that the missing creatures must be in our sector (sector Gamma), so we have ourselves a nice simple equation.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+r & = & 50 - 6 + 6t\\
+r & = & h_3 + n_3 t\\
+44 - 6t & = & h_3 + n_3 t\\
+44 & = & h_3 + (6 + n_3) t
+\end{array} %]]></script>
+
+<p>Now, given this equation and knowing the search space for both <script type="math/tex">h_3</script> and <script type="math/tex">n_3</script>, we can easily restrict the search space for <script type="math/tex">t</script>. If we pop in the maximum values for <script type="math/tex">h_3</script> and <script type="math/tex">n_3</script> and solve it, we can find the minimum value for <script type="math/tex">t</script>, and vice versa for the maximum value.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+44 & = & 7 + (6 + 7) t_{min}\\
+t_{min} & \approx & 3\\
+44 & = & 1 + (6 + 0) t_{max}\\
+t_{max} & \approx & 7
+\end{array} %]]></script>
+
+<p>With this information, we can limit the search space for <script type="math/tex">t</script>, because we know that it must be within the bounds of <script type="math/tex">t_{min}</script> and <script type="math/tex">t_{max}</script>.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+t & \in & \{ x \in \mathbb{N} | t_{min} \leq x \leq t_{max}\}\\
+t & \in & \{3, 4, 5, 6, 7\}
+\end{array} %]]></script>
+
+<p>Now, to actually solve this whole mess, we need to rearrange our equation a little bit.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+44 & = & h_3 + (6 + n_3) t\\
+44 - h_3 & = & (6 + n_3) t
+\end{array} %]]></script>
+
+<p>With this equation, we can see that <script type="math/tex">44 - h_3</script> must be divisible by both <script type="math/tex">(6 + n_3)</script> and <script type="math/tex">t</script>. So, given that we have a list of candidates for <script type="math/tex">h_3</script>, we can simply check their divisors and see if any of them are candidates for <script type="math/tex">t</script>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><script type="math/tex">h_3</script></th>
+      <th>equation</th>
+      <th><script type="math/tex">\{x \in \mathbb{N} \vert x \mid (44 - h_3), t_{min} \leq x \leq t_{max}\}</script></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><script type="math/tex">1</script></td>
+      <td><script type="math/tex">43 = (6 + n_3) t</script></td>
+      <td><script type="math/tex">\{\}</script></td>
+    </tr>
+    <tr>
+      <td><script type="math/tex">3</script></td>
+      <td><script type="math/tex">41 = (6 + n_3) t</script></td>
+      <td><script type="math/tex">\{\}</script></td>
+    </tr>
+    <tr>
+      <td><script type="math/tex">5</script></td>
+      <td><script type="math/tex">39 = (6 + n_3) t</script></td>
+      <td><script type="math/tex">\{3\}</script></td>
+    </tr>
+    <tr>
+      <td><script type="math/tex">6</script></td>
+      <td><script type="math/tex">38 = (6 + n_3) t</script></td>
+      <td><script type="math/tex">\{\}</script></td>
+    </tr>
+    <tr>
+      <td><script type="math/tex">7</script></td>
+      <td><script type="math/tex">37 = (6 + n_3) t</script></td>
+      <td><script type="math/tex">\{\}</script></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Seeing that only <script type="math/tex">h_3 = 5</script> produced a valid <script type="math/tex">t = 3</script>, these must be our values. Now, all that is left to do is pop them right back into the equation to find <script type="math/tex">n_3</script>.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{array}{rcl}
+39 & = & (6 + n_3) 3\\
+21 & = & 3n_3\\
+7 & = & n_3
+\end{array} %]]></script>
+
+<p>There we go, <script type="math/tex">n_3 = 7</script>. This means that in sector Gamma, there are five sharks and seven fish tanks. Every fish tank contains three fish.</p>
+
+<p>Too bad that this could be solved on paper, I’m hoping that next time I can finally get an excuse to play around with a fancy constraint solver or implement something. But in the meantime, it was fun to do and I hope I didn’t get anything wrong.</p>
+
+
+</div>
+
+<div class="pagination">
+  
+    <a href="/2018-02-22/tracing-linux-macos" class="left arrow">&#8592;</a>
+  
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        &copy; <time datetime="2018-09-09 16:42:40 +0200">2018</time> . Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
+      </span>
+    </footer>
+  </body>
+</html>

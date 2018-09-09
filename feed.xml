@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-09T16:42:40+02:00</updated><id>/</id><title type="html">xfbs:blog</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Fresh system</title><link href="/2018-09-09/setting-up-fresh-system" rel="alternate" type="text/html" title="Fresh system" /><published>2018-09-09T00:00:00+02:00</published><updated>2018-09-09T00:00:00+02:00</updated><id>/2018-09-09/setting-up-fresh-system</id><content type="html" xml:base="/2018-09-09/setting-up-fresh-system">&lt;p&gt;I just bought a new MacBook since I managed to break my old one while travelling in Taiwan. I always love getting a new system, because the setting up phase is a good opportunity to get rid of old cruft and review what is essential for me.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/fresh_screenshot.png&quot; alt=&quot;Clean and fresh macOS desktop&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;apps&quot;&gt;Apps&lt;/h2&gt;
+
+&lt;p&gt;What I like about macOS is that it comes with a lot of great tools out-of-the-box. However, I still ended up having to install a few essentials to get me started.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://brew.sh/&quot;&gt;Homebrew&lt;/a&gt;, the de-facto standard package manager for macOS. Necessary to install apps, mostly command-line related, and keep them up-to-date.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/xcode/&quot;&gt;Xcode&lt;/a&gt; for iOS and macOS app development. Xcode is actually surprisingly nice, but I don’t use it outside of app development.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kapeli.com/dash&quot;&gt;Dash&lt;/a&gt;, an offline documentation viewer. Great interface lets you find things faster and allows you to work offline.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://mozilla.org/firefox&quot;&gt;Firefox&lt;/a&gt; because it is always good to have another browser besides Safari, however some people prefer &lt;a href=&quot;https://www.google.com/chrome/&quot;&gt;Chrome&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tug.org/mactex/&quot;&gt;MacTeX&lt;/a&gt;, a LaTeX distribution for macOS. Necessary if you are a student and have to write papers that look decent.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://virtualbox.org/&quot;&gt;VirtualBox&lt;/a&gt; to run &lt;abbr title=&quot;Virtual Machine&quot;&gt;VM&lt;/abbr&gt;s, mostly for development. Some people prefer &lt;a href=&quot;https://www.vmware.com&quot;&gt;VMware&lt;/a&gt;, which I have never tried.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.codeux.com/textual/&quot;&gt;Textual&lt;/a&gt;, awesome &lt;abbr title=&quot;Internet Relay Chat&quot;&gt;IRC&lt;/abbr&gt; client.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.texpad.com&quot;&gt;Texpad&lt;/a&gt;, a LaTeX editor with some nifty features.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.sublimetext.com/&quot;&gt;Sublime Text&lt;/a&gt;, awesome programmer’s text editor.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Additionally, I also installed a couple of apps that are not strictly necessary, but I still use them occasionally.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gitup.co/&quot;&gt;Git Up&lt;/a&gt;, a &lt;abbr title=&quot;Guided User Interface&quot;&gt;GUI&lt;/abbr&gt; for interacting with git repositories.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.videolan.org/&quot;&gt;&lt;abbr title=&quot;VideoLAN Client&quot;&gt;VLC&lt;/abbr&gt;&lt;/a&gt;, the famous media player that can play &lt;em&gt;anything&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://transmissionbt.com&quot;&gt;Transmission&lt;/a&gt;, awesome gorrent client.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://openemu.org&quot;&gt;OpenEmu&lt;/a&gt;, for playing those old Mario games.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Instead of using the awesome &lt;a href=&quot;https://www.shimovpn.com/&quot;&gt;shimo&lt;/a&gt; app, I opted for using the native &lt;abbr title=&quot;Internet Key Exchange&quot;&gt;IKE&lt;/abbr&gt;v2 support in macOS to set up some of my &lt;abbr title=&quot;Virtual Private Network&quot;&gt;VPN&lt;/abbr&gt;s. It is always useful to have a few in case you are forced to use a questionable public WiFi. I probably will need to set up Shimo anyways to access my university’s &lt;abbr&gt;VPN&lt;/abbr&gt; at some point in time.&lt;/p&gt;
+
+&lt;h2 id=&quot;packages&quot;&gt;Packages&lt;/h2&gt;
+
+&lt;p&gt;With homebrew installed, I went on to installing some essential command-line tools, and updating others that Apple ships but are too old.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://git-scm.com&quot;&gt;Git&lt;/a&gt; version control system. I keep a lot of things under its control, such as this blog.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.vim.org&quot;&gt;&lt;abbr title=&quot;VI Improved&quot;&gt;VIM&lt;/abbr&gt;&lt;/a&gt;, the ubiquitous editor. My go-to editor for a lot of things. Ships out-of-the-box on macOS (thank you Apple!), but with an outdated version. Some people prefer the newer &lt;a href=&quot;https://neovim.io&quot;&gt;NeoVim&lt;/a&gt;, others like &lt;a href=&quot;https://www.gnu.org/software/emacs/&quot;&gt;Emacs&lt;/a&gt; and some people don’t like any command-line text-editors.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/tmux/tmux/wiki&quot;&gt;tmux&lt;/a&gt;, for having multiple tabs in a single Terminal session.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ruby-lang.org&quot;&gt;Ruby&lt;/a&gt;, my favourite programming language. Also ships out-of-the-box on macOS, but with an outdated version.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.rust-lang.org/&quot;&gt;Rust&lt;/a&gt;, Mozilla’s fancy-pants new language.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;dash&quot;&gt;Dash&lt;/h2&gt;
+
+&lt;p&gt;Out of all these great tools, there is one app that I want to highlight because it has radically improved my productivity.
+ when I bought it in 2015. While I have been using it for so long, I still feel that not too many people know about it.&lt;/p&gt;
+
+&lt;p&gt;Dash is an offline documentation browser. That means that it has a catalog of documentation for various programming languages, frameworks, gems, pods, tools, etc. These are called &lt;em&gt;docsets&lt;/em&gt;. Most docsets are official and autogenerated or maintained by the author, but there are also plenty of user-contributed ones. The format is open, such that you can create your own docsets. There are also a bunch of Dash clones for other platforms that use them, such as &lt;a href=&quot;https://zealdocs.org&quot;&gt;Zeal&lt;/a&gt; on Linux or &lt;a href=&quot;https://velocity.silverlakesoftware.com&quot;&gt;Velocity&lt;/a&gt; on Microsoft Windows.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/dash_app_screenshot.png&quot; alt=&quot;Dash&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I love Dash because the interface is well-designed. For example if you want to find out something about the Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Array#join&lt;/code&gt; method, you try &lt;code class=&quot;highlighter-rouge&quot;&gt;ruby: Array join&lt;/code&gt; into the search field. I find that using Dash is far more effective that googling for things, and you can explore classes and find out what methods they have. The docsets are really good and auto-update, which is important for languages like Rust that have new releases often.&lt;/p&gt;
+
+&lt;p&gt;Another interesting feature is that Dash can download all &lt;a href=&quot;https://stackoverflow.com&quot;&gt;StackOverflow&lt;/a&gt; answers that are tagged to a specific programming language or framework. This can sometimes be useful if you can’t figure out from the documentation how things fit together, but I don’t use that feature much.&lt;/p&gt;
+
+&lt;p&gt;It does cost some money, I paid around &lt;span title=&quot;about $33&quot; class=&quot;underlined&quot;&gt;28€&lt;/span&gt; for my license. But I think it is definitely worth it. Also, I think it is really awesome that my license, which I bought in 2015 for dash 3, was updated to work with dash 4 when it was released in 2017. Thanks Kapeli!&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I am only as good as the tools I have at my disposal. And there are some really nice ones for macOS. Here I have shown what I consider to be my most useful ones—they might not be right for you. But maybe you didn’t know about some of these before, and they are useful to you. In that case, if you can afford it, I’m sure the author would appreciate if you bought it.&lt;/p&gt;</content><author><name>xfbs</name></author><summary type="html">I just bought a new MacBook since I managed to break my old one while travelling in Taiwan. I always love getting a new system, because the setting up phase is a good opportunity to get rid of old cruft and review what is essential for me.</summary></entry><entry><title type="html">Tracing in Linux and macOS</title><link href="/2018-02-22/tracing-linux-macos" rel="alternate" type="text/html" title="Tracing in Linux and macOS" /><published>2018-02-22T00:00:00+01:00</published><updated>2018-02-22T00:00:00+01:00</updated><id>/2018-02-22/tracing-linux-macos</id><content type="html" xml:base="/2018-02-22/tracing-linux-macos">&lt;p&gt;If you’re coming from Linux, you may be familiar with the &lt;code class=&quot;highlighter-rouge&quot;&gt;ptrace&lt;/code&gt; family of commands — &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ltrace&lt;/code&gt;. If you’re coming from macOS, you may have had brief encounters with &lt;code class=&quot;highlighter-rouge&quot;&gt;dtruss&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt;, instead.&lt;/p&gt;
+
+&lt;p&gt;If you haven’t heard of them before or haven’t had the chance to play with them, this post is for you. I’m going to show you what they do and why they are important tools to know.&lt;/p&gt;
+
+&lt;h2 id=&quot;tracing-syscalls&quot;&gt;Tracing syscalls&lt;/h2&gt;
+
+&lt;p&gt;Let’s say you have an application, a small program, and you want to know analyze what it does. In this example, I’ll use a small program that checks if a file is present — if it’s not present, it will fail with a warning. I am using the &lt;code class=&quot;highlighter-rouge&quot;&gt;access&lt;/code&gt; function, which is a &lt;abbr title=&quot;Portable Operating System Interface&quot;&gt;POSIX&lt;/abbr&gt; &lt;abbr title=&quot;Application Programming Interface&quot;&gt;API&lt;/abbr&gt;, to check if a file exists.&lt;/p&gt;
+
+&lt;h6 id=&quot;file-safec-lines-031&quot;&gt;File safe.c, lines 0–31:&lt;/h6&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include 
+#include 
+#include 
+#include 
+#include
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strdup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;'\0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// security by obscurity&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;65&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;valid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;access&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;F_OK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;free&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;valid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;validate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.secret_file_seed&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;error: secret file is missing.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;congratulations!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For convenience, here’s a minimal &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; to build this program.&lt;/p&gt;
+
+&lt;h6 id=&quot;file-makefile-lines-02&quot;&gt;File Makefile, lines 0–2:&lt;/h6&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# build all binaries (default target).
+all: safe
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;on-linux&quot;&gt;On Linux&lt;/h3&gt;
+
+&lt;p&gt;I’m using a fresh Ubuntu &lt;abbr title=&quot;Virtual Machine&quot;&gt;VM&lt;/abbr&gt; to perform these tests. You’ll need some packages to compile this example — &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt;, a compiler (&lt;code class=&quot;highlighter-rouge&quot;&gt;gcc&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;clang&lt;/code&gt; will do just fine), and optionally &lt;code class=&quot;highlighter-rouge&quot;&gt;musl&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;musl-gcc&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ apt update
+$ apt install -y build-essential musl musl-dev musl-tools
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Compiling and running it (if you don’t want to use musl, just remove the &lt;code class=&quot;highlighter-rouge&quot;&gt;CC=musl-gcc&lt;/code&gt;), we get:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ CC=musl-gcc make linux
+musl-gcc safe.c -o safe
+$ ./safe
+error: secret file is missing.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Why musl? Statically linking to musl instead of dynamically linking to your system &lt;code class=&quot;highlighter-rouge&quot;&gt;libc&lt;/code&gt; means that the program will need to do fewer syscalls at startup.&lt;/p&gt;
+
+&lt;p&gt;So, what is the name of the file that it’s trying to access? That’s where &lt;a href=&quot;https://strace.io&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt;&lt;/a&gt; comes in! Basically, it intercepts and prints all syscalls that a program performs. That means we can sit back and watch what the program is doing — which files it is opening, what it is writing to those files, and much more. Here’s what strace tells me about my program when I run it on the Ubuntu machine:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ strace ./safe
+execve(&quot;./safe&quot;, [&quot;./safe&quot;], [/* 23 vars */]) = 0
+arch_prctl(ARCH_SET_FS, 0x7f0001204088) = 0
+set_tid_address(0x7f00012040c0) = 8456
+mprotect(0x7f0001202000, 4096, PROT_READ) = 0
+mprotect(0x600000, 4096, PROT_READ) = 0
+access(&quot;.IPSGNBIMHFCHAHMK&quot;, F_OK) = -1 ENOENT (No such file or directory)
+writev(2, [{&quot;&quot;, 0}, {&quot;error: secret file is missing.\n&quot;, 31}], 2error: secret file is missing.
+) = 31
+exit_group(1) = ?
++++ exited with 1 +++
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Immediately you can see the &lt;code class=&quot;highlighter-rouge&quot;&gt;access&lt;/code&gt; syscall, with &lt;code class=&quot;highlighter-rouge&quot;&gt;.IPSGNBIMHFCHAHMK&lt;/code&gt;. That means the program is asking the kernel if a file with this name exists. The kernel replies with &lt;code class=&quot;highlighter-rouge&quot;&gt;ENOENT&lt;/code&gt;, meaning that it doesn’t. What if we created that file and ran the program again?&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ touch .IPSGNBIMHFCHAHMK
+$ ./safe
+congratulations!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; can be used to snoop on a program and watch what it’s doing to the system — all of the syscalls it does will be in the output.&lt;/p&gt;
+
+&lt;h3 id=&quot;on-macos&quot;&gt;On MacOS&lt;/h3&gt;
+
+&lt;p&gt;Compilation on macOS works basically the same way as it does on Linux — but now we won’t be able to use musl, since it’s not supported. Instead, we’ll compile as usual with:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ make safe
+cc safe.c -o safe
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Unfortunately, &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; itself doesn’t exist on macOS. That would be too easy, wouldn’t it? Instead, there is something else, called &lt;em&gt;dtrace&lt;/em&gt;, which is actually fairly comprehensive and complicated — there is &lt;a href=&quot;http://dtrace.org/guide/preface.html#preface&quot;&gt;a book&lt;/a&gt; on it, there are &lt;a href=&quot;https://8thlight.com/blog/colin-jones/2015/11/06/dtrace-even-better-than-strace-for-osx.html&quot;&gt;quite&lt;/a&gt; a &lt;a href=&quot;https://blog.wallaroolabs.com/2017/12/dynamic-tracing-a-pony---python-program-with-dtrace/&quot;&gt;few&lt;/a&gt; blog &lt;a href=&quot;https://hackernoon.com/running-a-process-for-exactly-ten-minutes-c6921f93a4a9&quot;&gt;posts&lt;/a&gt; about it, but don’t be intimidated yet.&lt;/p&gt;
+
+&lt;p&gt;You don’t need to know all of &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt; to be able to use it, all you need to know is which fontends do what. And the &lt;code class=&quot;highlighter-rouge&quot;&gt;dtruss&lt;/code&gt; font-end happens to do basically the same as &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt;, meaning that it’ll show you which syscalls a binary performs. Let’s try it.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ dtruss ./safe
+dtrace: failed to initialize dtrace: DTrace requires additional privileges
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Well, &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt; doesn’t work the same way as &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; does, in spite of their similar naming. While &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; just politely asks the kernel to monitor a process, &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt; hooks directly into the kernel, meaning that you potentially have access to every secret of every user, and you can actually break things (if you try really, &lt;em&gt;really&lt;/em&gt; hard). Needless to say, &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt; and any related tools require &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt; privileges to use.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo dtruss ./safe | tail -n 10
+issetugid(0x101B2F000, 0x88, 0x1) = 0 0
+getpid(0x101B2F000, 0x88, 0x1) = 38431 0
+stat64(&quot;/AppleInternal/XBS/.isChrooted\0&quot;, 0x7FFF5E0D9D48, 0x1) = -1 Err#2
+stat64(&quot;/AppleInternal\0&quot;, 0x7FFF5E0D9CB8, 0x1) = -1 Err#2
+csops(0x961F, 0x7, 0x7FFF5E0D97D0) = -1 Err#22
+sysctl(0x7FFF5E0D9B90, 0x4, 0x7FFF5E0D9908) = 0 0
+csops(0x961F, 0x7, 0x7FFF5E0D90C0) = -1 Err#22
+proc_info(0x2, 0x961F, 0x11) = 56 0
+access(&quot;.IPSGNBIMHFCHAHMK\0&quot;, 0x0, 0x11) = -1 Err#2
+write_nocancel(0x2, &quot;error: secret file is missing.\n\0&quot;, 0x1F) = 31 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you don’t pipe the output through &lt;code class=&quot;highlighter-rouge&quot;&gt;tail&lt;/code&gt; (which you can try, if you are curious), you’ll get a lot of noise from the system setup routines, which we aren’t really interested in at this point. And just like in the &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; example on Linux, we can see the &lt;code class=&quot;highlighter-rouge&quot;&gt;access&lt;/code&gt; system call! With that information, the binary can be made to run on macOS, too:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ touch .IPSGNBIMHFCHAHMK
+$ ./safe
+congratulations!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;There’s just one little gotcha with dtrace, or rather with macOS: You can’t, by default, trace builtin utilities, eg. anything in &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo dtruss /bin/ls
+dtrace: failed to execute pp: dtrace cannot control executables signed with restricted entitlements
+$ sudo dtruss /usr/bin/git
+dtrace: failed to execute pp: dtrace cannot control executables signed with restricted entitlements
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What is going on there? This has something to do with the &lt;em&gt;System Integrity Protection&lt;/em&gt; that Apple introduced. Apparently, there are a few things &lt;a href=&quot;https://8thlight.com/blog/colin-jones/2017/02/02/dtrace-gotchas-on-osx.html&quot;&gt;not working under SIP&lt;/a&gt;. The only workaround that seems to be working for me is to manually copy whatever you are trying to trace to a different folder, like so:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cp `/usr/bin/which ls` .
+$ sudo dtruss ./ls | tail -n 10
+getdirentries64(0x5, 0x7FD761001000, 0x1000) = 392 0
+getdirentries64(0x5, 0x7FD761001000, 0x1000) = 0 0
+close_nocancel(0x5) = 0 0
+fchdir(0x4, 0x7FD761001000, 0x1000) = 0 0
+close_nocancel(0x4) = 0 0
+fstat64(0x1, 0x7FFF56D61AB8, 0x1000) = 0 0
+fchdir(0x3, 0x7FFF56D61AB8, 0x1000) = 0 0
+close_nocancel(0x3) = 0 0
+write_nocancel(0x1, &quot;.git\n.gitignore\nMakefile\nls\npass.c\nsafe\nsafe.c\ntracing-linux-macos.lit.md\ntracing-linux-macos.md\n\004\b\0&quot;, 0x61) = 97 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;tracing-library-calls&quot;&gt;Tracing library calls&lt;/h2&gt;
+
+&lt;p&gt;What if we are not interested in syscalls, but we’d much rather know what calls a program does to a library, like the standard library or &lt;code class=&quot;highlighter-rouge&quot;&gt;zlib&lt;/code&gt;? Let’s have a look at this little program right here. It taks a passphrase as argument, checks if the passphrase is correct, and returns a message depending that check.&lt;/p&gt;
+
+&lt;h6 id=&quot;file-passc-lines-036&quot;&gt;File pass.c, lines 0–36:&lt;/h6&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#include 
+#include 
+#include 
+#include
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;bool&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passphrase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;120&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;218&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;43&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;72&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;204&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;43&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;41&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;86&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;72&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;74&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;85&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;73&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;206&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;203&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;76&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;78&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;204&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;201&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;169&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;84&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;73&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;47&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;205&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;77&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;102&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;204&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;161&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;27&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+  &lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output_len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;uncompress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output_len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;sizeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passphrase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;error: no passphrase provided.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stderr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;error: wrong passphrase.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;congratulations!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once again we need to add a target to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; for this:
+We’ll need to add a target to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; to be able to compile this.&lt;/p&gt;
+
+&lt;h6 id=&quot;file-makefile-lines-23&quot;&gt;File Makefile, lines 2–3:&lt;/h6&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;all: pass
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since this program needs to be linked with &lt;code class=&quot;highlighter-rouge&quot;&gt;zlib&lt;/code&gt;, we’ll have to tell make about that, too:&lt;/p&gt;
+
+&lt;h6 id=&quot;file-makefile-lines-2933&quot;&gt;File Makefile, lines 29–33:&lt;/h6&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# compile 'pass' and link libz.
+pass: LDFLAGS += -lz
+pass: pass.o
+$(CC) -o $@ $&amp;lt; $(LDFLAGS)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;on-linux-1&quot;&gt;On Linux&lt;/h3&gt;
+
+&lt;p&gt;To get this example to compile under ubuntu, it needs &lt;code class=&quot;highlighter-rouge&quot;&gt;zlib&lt;/code&gt;. If zlib isn’t installed already, just install it with&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ apt install libz-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, we can go right ahead and compile everything using the rule we just created.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ make pass
+cc -c -o pass.o pass.c
+cc -o pass pass.o -lz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When we run &lt;code class=&quot;highlighter-rouge&quot;&gt;pass&lt;/code&gt;, we will see that it doesn’t work:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ./pass
+error: no passphrase provided.
+
+$ ./pass &quot;a passphrase&quot;
+error: wrong passphrase.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Oh well. What now? &lt;code class=&quot;highlighter-rouge&quot;&gt;ltrace&lt;/code&gt; to the rescue! Similar idea as &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt; — but instead of snooping on the syscalls the binary does, we’ll silently record and spit out all the library calls it does. That includes both &lt;code class=&quot;highlighter-rouge&quot;&gt;zlib&lt;/code&gt; library calls and &lt;code class=&quot;highlighter-rouge&quot;&gt;libc&lt;/code&gt; library calls!&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ltrace ./pass
+__libc_start_main(0x4008ba, 1, 0x7fff82c4d0a8, 0x400950
+fwrite(&quot;error: no passphrase provided.\n&quot;, 1, 31, 0x7f0a7c7cd540error: no passphrase provided.
+) = 31
++++ exited (status 1) +++
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Oh well. That’s not terribly useful, is it? I guess we should give it a (wrong) passphrase to see what it does.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ltrace ./pass &quot;a passphrase&quot;
+__libc_start_main(0x4008ba, 2, 0x7ffe3c481eb8, 0x400950
+uncompress(0x7ffe3c481d00, 0x7ffe3c481d58, 0x7ffe3c481d70, 40) = 0
+strcmp(&quot;peanuts are technically legumes&quot;, &quot;a passphrase&quot;) = 15
+fwrite(&quot;error: wrong passphrase.\n&quot;, 1, 25, 0x7f47cb184540error: wrong passphrase.
+) = 25
++++ exited (status 1) +++
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, the program output is a little bit mangled with the &lt;code class=&quot;highlighter-rouge&quot;&gt;ltrace&lt;/code&gt; output, for this example it’s fine because we can still see what’s going on, but you can tell ltrace to dump it’s output to a file. You can also filter which calls or which libraries it should trace, it has a bunch of useful options. But what we are looking for is there already and very visible, from the &lt;code class=&quot;highlighter-rouge&quot;&gt;strcmp&lt;/code&gt; call we can see that it’s comparing the string that we passed as argument with &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;peanuts are technically legumes&quot;&lt;/code&gt;. It seems like that is the string it’s looking for — let’s have a look:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ./pass &quot;peanuts are technically legumes&quot;
+congratulations!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;That was easy, wasn’t it?&lt;/p&gt;
+
+&lt;h3 id=&quot;on-macos-1&quot;&gt;On MacOS&lt;/h3&gt;
+
+&lt;p&gt;Compiling this under macOS is exactly the same as under Linux, with&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ make pass
+cc -c -o pass.o pass.c
+cc -o pass pass.o -lz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, once again we don’t have &lt;code class=&quot;highlighter-rouge&quot;&gt;ltrace&lt;/code&gt; on macOS. And there isn’t really a direct equivalent to it — this is the part where we have to play around with dtrace. It took me a while to figure this out. Thankfully, there were a few useful &lt;a href=&quot;https://www.joyent.com/blog/bruning-questions-debugging&quot;&gt;articles&lt;/a&gt; and obviously, the &lt;a href=&quot;http://dtrace.org/guide/preface.html#preface&quot;&gt;book&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The way &lt;code class=&quot;highlighter-rouge&quot;&gt;dtrace&lt;/code&gt; works is that it offers problems — lots of them, actually. You can trace the probes themselves, or you can attach functions to them. I won’t really go into much detail about dtrace, there is simply too much, and I don’t understand all of it well enough yet to be able to explain it.&lt;/p&gt;
+
+&lt;p&gt;To trace all function calls in pass, you could do:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo dtrace -F -n 'pid$target:pass::entry' -n 'pid$target:pass::return' -c &quot;./pass hello&quot;
+
+trace: description 'pid$target:pass::entry' matched 2 probes
+dtrace: description 'pid$target:pass::return' matched 2 probes
+error: wrong passphrase.
+dtrace: pid 54794 has exited
+CPU FUNCTION
+0 -&amp;gt; main
+0 -&amp;gt; check
+0 &amp;lt;- check
+0 &amp;amp;1 | tail -n 10
+
+0 264352 _platform_strcmp:entry __PAGEZERO __TEXT
+0 264352 _platform_strcmp:entry __TEXT __TEXT
+0 264352 _platform_strcmp:entry __DATA __TEXT
+0 264352 _platform_strcmp:entry __LINKEDIT __TEXT
+0 264352 _platform_strcmp:entry __PAGEZERO __TEXT
+0 264352 _platform_strcmp:entry __TEXT __TEXT
+0 264352 _platform_strcmp:entry __DATA __TEXT
+0 264352 _platform_strcmp:entry __LINKEDIT __TEXT
+0 264352 _platform_strcmp:entry peanuts are technically legumes hello
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And once again, from this we can tell that the ‘secret’ passphrase is &lt;em&gt;peanuts are technically legumes&lt;/em&gt;, which is easily comfirmed by running:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ./pass &quot;peanuts are technically legumes&quot;
+congratulations!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Being able to easily trace syscalls or library calls can be super handy when debugging. The &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;dtruss&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ltrace&lt;/code&gt; utilities are definitely a must-have in a programmer’s toolbelt, even if many things can also be done in a debugger. DTrace however is a totally different beast. It takes some work to understand it, I &lt;em&gt;barely&lt;/em&gt; scratched the surface of what it can do, but when you do have a grasp of it I think it’s a lot more powerful than a debugger or any of the other tools, because you can hook into &lt;em&gt;anything&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you want to play around with the code from this article, you may get it by running&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://gitlab.com/xfbs-blog/tracing-linux-macos.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Feel free to send in corrections or suggesions.&lt;/p&gt;</content><author><name>xfbs</name></author><summary type="html">If you’re coming from Linux, you may be familiar with the ptrace family of commands — strace and ltrace. If you’re coming from macOS, you may have had brief encounters with dtruss or dtrace, instead.</summary></entry><entry><title type="html">Fish Riddle</title><link href="/2017-07-26/fish-riddle" rel="alternate" type="text/html" title="Fish Riddle" /><published>2017-07-26T00:00:00+02:00</published><updated>2017-07-26T00:00:00+02:00</updated><id>/2017-07-26/fish-riddle</id><content type="html" xml:base="/2017-07-26/fish-riddle">&lt;p&gt;The internet is full of distractions, and unfortunately, I am not always impervious to all of them. Some of them can lead to interesting results. Today, my distraction came in the shape of a riddle from a riddle from a &lt;abbr&gt;TED&lt;/abbr&gt;-Ed video, which got me to explore my (rusty, but still somewhat present) math skills.&lt;/p&gt;
+
+&lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
+&lt;div class=&quot;embed-container&quot;&gt;    &lt;iframe title=&quot;YouTube video player&quot; width=&quot;640&quot; height=&quot;390&quot; src=&quot;//www.youtube.com/embed/&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, I was excited to learn about the puzzle to see if I could use programming (I was thinking of a constraint solver or possibly just brute-forcing it) to solve it. But alas, it turns out that it’s just solvable with plain maths 🤷🏽‍♀️. So let’s dive in and see what we can do here.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-problem&quot;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;You can watch the video to get the story of the puzzle, but it breaks down like this: you have three quadrants, each with a number of fish tanks and sharks in it. You know how many there are in both the first and second quadrants, and you must find out how many there are in the third quadrant.&lt;/p&gt;
+
+&lt;p&gt;So let’s first introduce a number of variables to help is keep track of things. We define:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;s_i&lt;/script&gt; as the number of creatures in sector &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;,&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;h_i&lt;/script&gt; as the number of sharks in sector &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;,&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;f_i&lt;/script&gt; as the number of fish in sector &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;,&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;t_i&lt;/script&gt; as the number of fish per tank in sector &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;,&lt;/li&gt;
+  &lt;li&gt;&lt;script type=&quot;math/tex&quot;&gt;n_i&lt;/script&gt; as the number of fish tanks in sector &lt;script type=&quot;math/tex&quot;&gt;i&lt;/script&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;the-constraints&quot;&gt;The constraints&lt;/h2&gt;
+
+&lt;p&gt;There are six comstraints given in the puzzle.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;There are 50 creatures in total,&lt;/strong&gt; including sharks and fish.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+f_i &amp; = &amp; n_i t_i\\
+s_i &amp; = &amp; h_i f_i\\
+\sum_{i=1}^{3} s_i &amp; = &amp; 50
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Each sector has anywhere from one to seven sharks, with no two sectors
+having the same nmber of sharks&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rl}
+\forall i \in \{1, 2, 3\}: &amp; 1 \leq h_i \leq 7\\
+\forall i, j \in \{1, 2, 3\}: &amp; h_i \neq h_j
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Each tank has an equal number of fish&lt;/strong&gt;.
+&lt;em&gt;Since this is true, we will just use &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; to refer to any of &lt;script type=&quot;math/tex&quot;&gt;t_i&lt;/script&gt;, simce they are all the same&lt;/em&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rl}
+\forall i, j \in \{1, 2, 3\}: &amp; t_i = t_j
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;In total, there are 13 or fewer fish tanks&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+\sum_{i=1}^{3} n_i &amp; \leq &amp; 13
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Sector Alpha has two sharks and four tanks&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+h_1 &amp; = &amp; 2\\
+n_1 &amp; = &amp; 4
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Sector Beta has four sharks and two tanks&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+h_2 &amp; = &amp; 4\\
+n_2 &amp; = &amp; 2
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;solution&quot;&gt;Solution&lt;/h2&gt;
+
+&lt;p&gt;The objective for us is to find both the values of &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, &lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;n_3&lt;/script&gt;. To do this, I started out by using the given constraints to find the number of possible values for each of them.&lt;/p&gt;
+
+&lt;p&gt;Applying the given constraint #2, we can limit the search space for &lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt; easily.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+h_3 &amp; \in &amp; \{ x \in \mathbb{N} | 1 \leq x \leq 7, \forall i \in \{1, 2\}: x \neq h_i\}\\
+h_3 &amp; \in &amp; \{1, 3, 5, 6, 7\}
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Similarly, using the given constraint #3, we can limit the search space for &lt;script type=&quot;math/tex&quot;&gt;n_3&lt;/script&gt; easily.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+n_3 &amp; \in &amp; \{ x \in \mathbb{N} | 0 \leq x \leq \sum_{i=1}^{2} n_i\}\\
+n_3 &amp; \in &amp; \{0, 1, 2, 3, 4, 5, 6, 7\}
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Finding out the search space for &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; is unfortunately not that simple. First, we need to know how many creatures are currently accounted for.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+\sum_{i=1}^{2} s_i &amp; = &amp; 6 + 6t\\
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;From constraint 1, we know that there are 50 creatures. Thus, from the amount of creatures we have right now and from that, we can calculate how many are not accounted for yet, &lt;script type=&quot;math/tex&quot;&gt;r&lt;/script&gt; (for &lt;em&gt;rest&lt;/em&gt;). We also know that the missing creatures must be in our sector (sector Gamma), so we have ourselves a nice simple equation.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+r &amp; = &amp; 50 - 6 + 6t\\
+r &amp; = &amp; h_3 + n_3 t\\
+44 - 6t &amp; = &amp; h_3 + n_3 t\\
+44 &amp; = &amp; h_3 + (6 + n_3) t
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Now, given this equation and knowing the search space for both &lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;n_3&lt;/script&gt;, we can easily restrict the search space for &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. If we pop in the maximum values for &lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;n_3&lt;/script&gt; and solve it, we can find the minimum value for &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, and vice versa for the maximum value.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+44 &amp; = &amp; 7 + (6 + 7) t_{min}\\
+t_{min} &amp; \approx &amp; 3\\
+44 &amp; = &amp; 1 + (6 + 0) t_{max}\\
+t_{max} &amp; \approx &amp; 7
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;With this information, we can limit the search space for &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, because we know that it must be within the bounds of &lt;script type=&quot;math/tex&quot;&gt;t_{min}&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;t_{max}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+t &amp; \in &amp; \{ x \in \mathbb{N} | t_{min} \leq x \leq t_{max}\}\\
+t &amp; \in &amp; \{3, 4, 5, 6, 7\}
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Now, to actually solve this whole mess, we need to rearrange our equation a little bit.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+44 &amp; = &amp; h_3 + (6 + n_3) t\\
+44 - h_3 &amp; = &amp; (6 + n_3) t
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;With this equation, we can see that &lt;script type=&quot;math/tex&quot;&gt;44 - h_3&lt;/script&gt; must be divisible by both &lt;script type=&quot;math/tex&quot;&gt;(6 + n_3)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;. So, given that we have a list of candidates for &lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt;, we can simply check their divisors and see if any of them are candidates for &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;script type=&quot;math/tex&quot;&gt;h_3&lt;/script&gt;&lt;/th&gt;
+      &lt;th&gt;equation&lt;/th&gt;
+      &lt;th&gt;&lt;script type=&quot;math/tex&quot;&gt;\{x \in \mathbb{N} \vert x \mid (44 - h_3), t_{min} \leq x \leq t_{max}\}&lt;/script&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;1&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;43 = (6 + n_3) t&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;\{\}&lt;/script&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;3&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;41 = (6 + n_3) t&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;\{\}&lt;/script&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;5&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;39 = (6 + n_3) t&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;\{3\}&lt;/script&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;6&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;38 = (6 + n_3) t&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;\{\}&lt;/script&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;7&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;37 = (6 + n_3) t&lt;/script&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;script type=&quot;math/tex&quot;&gt;\{\}&lt;/script&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Seeing that only &lt;script type=&quot;math/tex&quot;&gt;h_3 = 5&lt;/script&gt; produced a valid &lt;script type=&quot;math/tex&quot;&gt;t = 3&lt;/script&gt;, these must be our values. Now, all that is left to do is pop them right back into the equation to find &lt;script type=&quot;math/tex&quot;&gt;n_3&lt;/script&gt;.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{array}{rcl}
+39 &amp; = &amp; (6 + n_3) 3\\
+21 &amp; = &amp; 3n_3\\
+7 &amp; = &amp; n_3
+\end{array} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;There we go, &lt;script type=&quot;math/tex&quot;&gt;n_3 = 7&lt;/script&gt;. This means that in sector Gamma, there are five sharks and seven fish tanks. Every fish tank contains three fish.&lt;/p&gt;
+
+&lt;p&gt;Too bad that this could be solved on paper, I’m hoping that next time I can finally get an excuse to play around with a fancy constraint solver or implement something. But in the meantime, it was fun to do and I hope I didn’t get anything wrong.&lt;/p&gt;</content><author><name>xfbs</name></author><summary type="html">The internet is full of distractions, and unfortunately, I am not always impervious to all of them. Some of them can lead to interesting results. Today, my distraction came in the shape of a riddle from a riddle from a TED-Ed video, which got me to explore my (rusty, but still somewhat present) math skills.</summary></entry></feed>
