@@ -520,6 +520,9 @@ html {
     html {
       font-size: 18px; } }
 
+footer span {
+  color: #aaa; }
+
 code {
   font-size: 85%;
   padding: .1em .2em;
@@ -556,6 +559,11 @@ abbr {
     margin: 0.5em auto 1rem; }
     .post-info span {
       font-style: normal; }
+  .post-title {
+    font-size: 3rem; }
+    @media (max-width: 600px) {
+      .post-title {
+        font-size: 2rem; } }
 
 span[title], abbr[title] {
   text-decoration: underline;
@@ -581,3 +589,42 @@ table {
     border-bottom: 0.1em solid #555; }
   table tbody tr td {
     border-bottom: 0.05em dotted #aaa; }
+
+.icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin: -24px -37px;
+  margin-bottom: 1rem; }
+  @media (max-width: 600px) {
+    .icon-grid {
+      margin: -12px -18px; } }
+  .icon-grid div {
+    width: 72px;
+    height: 72px;
+    margin: 36px 36px;
+    line-height: 1; }
+    @media (max-width: 600px) {
+      .icon-grid div {
+        width: 48px;
+        height: 48px;
+        margin: 24px 18px; } }
+    .icon-grid div a {
+      line-height: 1;
+      color: #555; }
+    .icon-grid div img {
+      width: 100%;
+      margin: 0;
+      border-radius: 5px;
+      line-height: 1; }
+    .icon-grid div div {
+      width: 100%;
+      height: auto;
+      text-align: center;
+      font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 70%;
+      margin: 0;
+      margin-top: 0.3rem; }
+      @media (max-width: 600px) {
+        .icon-grid div div {
+          font-size: 60%; } }
