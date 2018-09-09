@@ -31,6 +31,8 @@ plugins:
   - jekyll-paginate
   - jekyll-remote-theme
   - jekyll-feed
+  - jekyll-youtube
+  - jekyll-typogrify
 
 permalink: /:year-:month-:day/:title
 paginate: 5
