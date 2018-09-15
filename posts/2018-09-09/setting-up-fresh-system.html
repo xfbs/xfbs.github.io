@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+
+  <title>
+    
+      Fresh system &middot; xfbs:blog
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">-->
+  <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet">
+
+  <!-- MathJaX -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.xfbs.net//feed.xml" title="xfbs:blog" />
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/">
+          <h2 class="nav-title">xfbs:blog</h2>
+        </a>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/">Posts</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    
+      <br>
+      <time datetime="2018-09-09 00:00:00 +0200">September 09, 2018</time>
+    
+  </div>
+  <h1 class="post-title">Fresh system</h1>
+  <div class="post-line"></div>
+
+  <p>I just bought a new MacBook since I managed to break my old one while travelling in Taiwan. I always love getting a new system, because the setting up phase is a good opportunity to get rid of old cruft and review what is essential for me.</p>
+
+<p><img src="/assets/images/macos-fresh-screenshot.png" alt="Clean and fresh macOS desktop" /></p>
+
+<h2 id="apps">Apps</h2>
+
+<p>What I like about macOS is that it comes with a lot of great tools out-of-the-box. However, I still ended up having to install a few essentials to get me started.</p>
+
+<ul>
+  <li><a href="https://brew.sh/">Homebrew</a>, the de-facto standard package manager for macOS. Necessary to install apps, mostly command-line related, and keep them up-to-date.</li>
+  <li><a href="https://developer.apple.com/xcode/">Xcode</a> for iOS and macOS app development. Xcode is actually surprisingly nice, but I don’t use it outside of app development.</li>
+  <li><a href="https://kapeli.com/dash">Dash</a>, an offline documentation viewer. Great interface lets you find things faster and allows you to work offline.</li>
+  <li><a href="https://mozilla.org/firefox">Firefox</a> because it is always good to have another browser besides Safari, however some people prefer <a href="https://www.google.com/chrome/">Chrome</a>.</li>
+  <li><a href="https://tug.org/mactex/">MacTeX</a>, a LaTeX distribution for macOS. Necessary if you are a student and have to write papers that look decent.</li>
+  <li><a href="https://virtualbox.org/">VirtualBox</a> to run <abbr title="Virtual Machine">VM</abbr>s, mostly for development. Some people prefer <a href="https://www.vmware.com">VMware</a>, which I have never tried.</li>
+  <li><a href="https://www.codeux.com/textual/">Textual</a>, awesome <abbr title="Internet Relay Chat">IRC</abbr> client.</li>
+  <li><a href="https://www.texpad.com">Texpad</a>, a LaTeX editor with some nifty features.</li>
+  <li><a href="https://www.sublimetext.com/">Sublime Text</a>, awesome programmer’s text editor.</li>
+</ul>
+
+<p>Additionally, I also installed a couple of apps that are not strictly necessary, but I still use them occasionally.</p>
+
+<ul>
+  <li><a href="https://gitup.co/">Git Up</a>, a <abbr title="Guided User Interface">GUI</abbr> for interacting with git repositories.</li>
+  <li><a href="http://www.videolan.org/"><abbr title="VideoLAN Client">VLC</abbr></a>, the famous media player that can play <em>anything</em>.</li>
+  <li><a href="https://transmissionbt.com">Transmission</a>, awesome gorrent client.</li>
+  <li><a href="https://openemu.org">OpenEmu</a>, for playing those old Mario games.</li>
+</ul>
+
+<p>Instead of using the awesome <a href="https://www.shimovpn.com/">shimo</a> app, I opted for using the native <abbr title="Internet Key Exchange">IKE</abbr>v2 support in macOS to set up some of my <abbr title="Virtual Private Network">VPN</abbr>s. It is always useful to have a few in case you are forced to use a questionable public WiFi. I probably will need to set up Shimo anyways to access my university’s <abbr>VPN</abbr> at some point in time.</p>
+
+<h2 id="packages">Packages</h2>
+
+<p>With homebrew installed, I went on to installing some essential command-line tools, and updating others that Apple ships but are too old.</p>
+
+<ul>
+  <li><a href="https://git-scm.com">Git</a> version control system. I keep a lot of things under its control, such as this blog.</li>
+  <li><a href="https://www.vim.org"><abbr title="VI Improved">VIM</abbr></a>, the ubiquitous editor. My go-to editor for a lot of things. Ships out-of-the-box on macOS (thank you Apple!), but with an outdated version. Some people prefer the newer <a href="https://neovim.io">NeoVim</a>, others like <a href="https://www.gnu.org/software/emacs/">Emacs</a> and some people don’t like any command-line text-editors.</li>
+  <li><a href="https://github.com/tmux/tmux/wiki">tmux</a>, for having multiple tabs in a single Terminal session.</li>
+  <li><a href="https://www.ruby-lang.org">Ruby</a>, my favourite programming language. Also ships out-of-the-box on macOS, but with an outdated version.</li>
+  <li><a href="https://www.rust-lang.org/">Rust</a>, Mozilla’s fancy-pants new language.</li>
+</ul>
+
+<h2 id="dash">Dash</h2>
+
+<p>Out of all these great tools, there is one app that I want to highlight because it has radically improved my productivity.
+ when I bought it in 2015. While I have been using it for so long, I still feel that not too many people know about it.</p>
+
+<p>Dash is an offline documentation browser. That means that it has a catalog of documentation for various programming languages, frameworks, gems, pods, tools, etc. These are called <em>docsets</em>. Most docsets are official and autogenerated or maintained by the author, but there are also plenty of user-contributed ones. The format is open, such that you can create your own docsets. There are also a bunch of Dash clones for other platforms that use them, such as <a href="https://zealdocs.org">Zeal</a> on Linux or <a href="https://velocity.silverlakesoftware.com">Velocity</a> on Microsoft Windows.</p>
+
+<p><img src="/assets/images/dash-app-screenshot.png" alt="Dash" /></p>
+
+<p>I love Dash because the interface is well-designed. For example if you want to find out something about the Ruby <code class="highlighter-rouge">Array#join</code> method, you try <code class="highlighter-rouge">ruby: Array join</code> into the search field. I find that using Dash is far more effective that googling for things, and you can explore classes and find out what methods they have. The docsets are really good and auto-update, which is important for languages like Rust that have new releases often.</p>
+
+<p>Another interesting feature is that Dash can download all <a href="https://stackoverflow.com">StackOverflow</a> answers that are tagged to a specific programming language or framework. This can sometimes be useful if you can’t figure out from the documentation how things fit together, but I don’t use that feature much.</p>
+
+<p>It does cost some money, I paid around <span title="about $33" class="underlined">28€</span> for my license. But I think it is definitely worth it. Also, I think it is really awesome that my license, which I bought in 2015 for dash 3, was updated to work with dash 4 when it was released in 2017. Thanks Kapeli!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I am only as good as the tools I have at my disposal. And there are some really nice ones for macOS. Here I have shown what I consider to be my most useful ones—they might not be right for you. But maybe you didn’t know about some of these before, and they are useful to you. In that case, if you can afford it, I’m sure the author would appreciate if you bought it.</p>
+
+
+
+</div>
+
+<div class="pagination">
+  
+  
+    <a href="/posts/2018-02-22/tracing-linux-macos" class="right arrow">&#8594;</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        Made with <a href="https://jekyllrb.com">Jekyll</a> using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
+      </span>
+    </footer>
+  </body>
+</html>
