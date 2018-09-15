@@ -618,13 +618,15 @@ table {
       border-radius: 5px;
       line-height: 1; }
     .icon-grid div div {
-      width: 100%;
+      width: 108px;
       height: auto;
       text-align: center;
       font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
       font-size: 70%;
       margin: 0;
-      margin-top: 0.3rem; }
+      margin-top: 0.3rem;
+      margin-right: -18px;
+      margin-left: -18px; }
       @media (max-width: 600px) {
         .icon-grid div div {
           font-size: 60%; } }
