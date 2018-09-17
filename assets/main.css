@@ -645,3 +645,6 @@ footer img.cc-icon:hover {
 .post .footnotes {
   margin-top: 2rem;
   border-top: dotted 1px rgba(0, 0, 0, 0.2); }
+
+.post p {
+  hyphens: auto; }
