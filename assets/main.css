@@ -630,3 +630,18 @@ table {
       @media (max-width: 600px) {
         .icon-grid div div {
           font-size: 60%; } }
+
+img.cc-icon {
+  display: inline;
+  width: 0.8em;
+  margin: -0.05em -0.05em; }
+
+footer img.cc-icon {
+  filter: invert(0.5); }
+
+footer img.cc-icon:hover {
+  filter: invert(0.4) sepia(1) saturate(5) hue-rotate(175deg); }
+
+.post .footnotes {
+  margin-top: 2rem;
+  border-top: dotted 1px rgba(0, 0, 0, 0.2); }
