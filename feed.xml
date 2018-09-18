@@ -1,4 +1,153 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2018-09-17T17:58:24+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Fresh system</title><link href="https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system" rel="alternate" type="text/html" title="Fresh system" /><published>2018-09-09T00:00:00+02:00</published><updated>2018-09-09T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system</id><content type="html" xml:base="https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system">&lt;p&gt;I just bought a new MacBook since I managed to break my old one while travelling in Taiwan. I always love getting a new system, because the setting up phase is a good opportunity to get rid of old cruft and review what is essential for me.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2018-09-18T19:58:57+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Exploring APFS</title><link href="https://blog.xfbs.net/posts/2018-09-15/exploring-apfs" rel="alternate" type="text/html" title="Exploring APFS" /><published>2018-09-15T00:00:00+02:00</published><updated>2018-09-15T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/2018-09-15/exploring-apfs</id><content type="html" xml:base="https://blog.xfbs.net/posts/2018-09-15/exploring-apfs">&lt;p&gt;File systems are fascinating and scary. When I heard that Apple was working on its own &lt;a href=&quot;https://arstechnica.com/gadgets/2016/06/new-apfs-file-system-spotted-in-new-version-of-macos/&quot;&gt;in 2016&lt;/a&gt;, I was immediately interested. Now, in 2018, &lt;abbr title=&quot;Apple Filesystem&quot;&gt;APFS&lt;/abbr&gt; is standard on both macOS and iOS.&lt;/p&gt;
+
+&lt;p&gt;Why are filesystems so interesting? With &lt;a href=&quot;https://github.com/libfuse/libfuse&quot;&gt;&lt;abbr title=&quot;File System in Userspace&quot;&gt;FUSE&lt;/abbr&gt;&lt;/a&gt;, anyone can implement their own filesystem. But these run in userspace, where things are slower but protected from programming errors&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Real file systems run in kernelspace&lt;sup id=&quot;fnref:2&quot;&gt;&lt;a href=&quot;#fn:2&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;, and that is where things get interesting because programming errors can crash the system&lt;sup id=&quot;fnref:3&quot;&gt;&lt;a href=&quot;#fn:3&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. But much worse than crashing a system, an error could also cause corruption or loss of data. With that in mind, it becomes apparent that file system authors are incredibly talented people&lt;sup id=&quot;fnref:4&quot;&gt;&lt;a href=&quot;#fn:4&quot; class=&quot;footnote&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;motivations&quot;&gt;Motivations&lt;/h2&gt;
+
+&lt;p&gt;Before &lt;abbr&gt;APFS&lt;/abbr&gt;, Apple used &lt;a href=&quot;http://ntfs.com/hfs.htm&quot;&gt;&lt;abbr title=&quot;Hierarchical File System Plus&quot;&gt;HFS+&lt;/abbr&gt;&lt;/a&gt;, which was introduced in 1998 as an extension of &lt;a href=&quot;https://en.wikipedia.org/wiki/Hierarchical_File_System&quot;&gt;&lt;abbr title=&quot;Hierarchical File System&quot;&gt;HFS&lt;/abbr&gt;&lt;/a&gt;, and that in turn was introduced in 1985. Both of these were designed for storage media like hard drives.&lt;sup id=&quot;fnref:hfs-floppy&quot;&gt;&lt;a href=&quot;#fn:hfs-floppy&quot; class=&quot;footnote&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;So what is so special about hard drives? These work similar to an old record player: they have rotating disks (usually multiple stacked on top of each other) with a round track consisting of the data, and they have a pickup that can move to follow the track or jump to another position.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/harddrive-front.svg&quot; alt=&quot;Harddrive front&quot; width=&quot;20%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;These kinds of storage media are really good at reading and writing sequential data. That means that when you read a file from beginning to end, the speed is quite good. However, if you jump around, reading bits and pieces from different places, the performance rapidly deteriorates. This is because the reading head has to physically move and find whatever you are looking for.&lt;/p&gt;
+
+&lt;p&gt;File systems designed for these kinds of storage media have some very specific contstraints. For example, they might try not to split up files. Maybe they will try to put files that are accessed frequently close to another, so that they can be accessed faster. All of these optimizations are built on knowledge of how hard drives work internally.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/samsung-ssd.jpg&quot; alt=&quot;Samsung SSD&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All was going well for file system architechts and implementors, until the &lt;abbr title=&quot;Solid State Drive&quot;&gt;SSD&lt;/abbr&gt; took on a major role in personal computing. As the name &lt;em&gt;solid state drive&lt;/em&gt; suggests, the main difference between regular hard drives is that it doesn’t have any moving parts.&lt;/p&gt;
+
+&lt;p&gt;As such, it has different properties that file system implementors need to watch out for. For once, when accessing data, there is almost no different between sequential and random access, meaning that the speed is the same if you read a file from beginning to end as if you access small bits in a random order. But the one issue is that &lt;abbr&gt;SSD&lt;/abbr&gt;s have a limited life span, because the individual memory cells that it is made up of can only take so many writes.&lt;/p&gt;
+
+&lt;p&gt;When Apple was designing &lt;abbr&gt;APFS&lt;/abbr&gt;, one of the reasons behind that was that they designed it from the ground up to work well with &lt;abbr&gt;SSD&lt;/abbr&gt; storage, which is now more common than traditional hard drives. While it is possible to add &lt;abbr&gt;SSD&lt;/abbr&gt; support to existing file systems, for example by adding support for the &lt;a href=&quot;https://en.wikipedia.org/wiki/Trim_(computing)&quot;&gt;&lt;abbr title=&quot;A command used to inform an SSD drive that a block of memory is no longer used and can be wiped internally&quot;&gt;TRIM&lt;/abbr&gt; command&lt;/a&gt;, it is easier to just start from scratch.&lt;/p&gt;
+
+&lt;p&gt;In fact, Apple themselves say:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Apple File System is uniquely designed to meet the needs of Apple’s products and ecosystem. Apple File System provides strong encryption, ultra-low latencies and limited memory overhead. It is optimized for flash/&lt;abbr&gt;SSD&lt;/abbr&gt; storage and can be used on everything from an Apple Watch to a Mac Pro.&lt;/p&gt;
+
+  &lt;p&gt;&lt;abbr&gt;HFS+&lt;/abbr&gt; and its predecessor &lt;abbr&gt;HFS&lt;/abbr&gt; are more than 30 years old. These file systems were developed in an era of floppy disks and spinning hard drives, when file sizes were calculated in kilobytes or megabytes.&lt;/p&gt;
+
+  &lt;p&gt;Today, people commonly store hundreds of gigabytes and access millions of files on high-speed, low-latency flash drives. People carry their data with them, and they demand that sensitive information be secure.&lt;sup id=&quot;fnref:apple-apfs&quot;&gt;&lt;a href=&quot;#fn:apple-apfs&quot; class=&quot;footnote&quot;&gt;6&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;features&quot;&gt;Features&lt;/h2&gt;
+
+&lt;p&gt;&lt;abbr&gt;APFS&lt;/abbr&gt; is a pragmatic successor to the previous &lt;abbr&gt;HFS+&lt;/abbr&gt; in that it doesn’t add anything crazy, but it does have some useful bits and pieces that we can look at in detail.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Encryption&lt;/strong&gt; support lets your protect your data safe from prying eyes, unless they have the password.&lt;/li&gt;
+  &lt;li&gt;It is possible to take &lt;strong&gt;snapshots&lt;/strong&gt; of the state of the file system. This means that you can save the current state of your file system without having to do a full backup. This feature is actually used by Time Machine.&lt;/li&gt;
+  &lt;li&gt;It supports &lt;strong&gt;clones&lt;/strong&gt; of files. This means that when copying large files, they don’t actually need to be copied, but both files (clones) will point to the same data. When you then edit one of them, the file system only needs to record the changes.&lt;/li&gt;
+  &lt;li&gt;On a single &lt;em&gt;container&lt;/em&gt; (think hard drive or partition), you can have multiple &lt;em&gt;volumes&lt;/em&gt; sharing the same space. This is like partitioning a hard drive, but instead of having to specify the sizes beforehand, they all share the same space, so you can divit it up as you like.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;encryption&quot;&gt;Encryption&lt;/h3&gt;
+
+&lt;p&gt;When you create a new &lt;abbr&gt;APFS&lt;/abbr&gt;-formatted volume, you have the option of creating an regular or and encrypted volume. For the latter, you just need to enter a password that you will need to remember because you will have to enter it every time you mount your volume, unless you allow your computer to save it in your keychain.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-creating-encrypted.png&quot; alt=&quot;Creating an APFS-formatted encrypted volume&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is not exactly different from the process of creating an encrypted &lt;abbr&gt;HFS+&lt;/abbr&gt; volume. I think that the only difference is internally—with &lt;abbr&gt;HFS+&lt;/abbr&gt; volumes, the encryption was apparently a little more hackish&lt;sup id=&quot;fnref:imore-apfs&quot;&gt;&lt;a href=&quot;#fn:imore-apfs&quot; class=&quot;footnote&quot;&gt;7&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;space-sharing&quot;&gt;Space sharing&lt;/h3&gt;
+
+&lt;p&gt;Space sharing means that if you have an &lt;abbr&gt;APFS&lt;/abbr&gt;-formatted drive, you can create multiple volumes on it that share the same space. This is very similar to having multiple partitions on a single drive, with one crucial difference: with partitions, you have to specify their size when you create them, and it is not easy to change their size (grow or shrink them). With space sharing, multiple volumes share the same container, and they can use as much of that container as they like until it is full.&lt;/p&gt;
+
+&lt;p&gt;Disk utility has two buttons that can be used to add and remove volumes from an &lt;abbr&gt;APFS&lt;/abbr&gt; container. Each volume is like a separate file system, so you can have multiple volumes, some with different encryption keys and some with no encryption.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-adding-volume.png&quot; alt=&quot;Adding a volume to an APFS-formatter container&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It is even possible to specify some constraints, like reserving a minimum amount of space for a given volume or limiting its maximum size.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-volume-size-options.png&quot; alt=&quot;APFS volume size options&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a really awesome feature, and I think all file systems should allow this. There are some solutions that allow this, like &lt;abbr title=&quot;Logical Volume Manager&quot;&gt;LVM&lt;/abbr&gt; or some file system that natively support it, like &lt;abbr&gt;ZFS&lt;/abbr&gt;. The only possible downside is that if the file system was corrupted, it could affect all volumes on it, instead of just one as with partitioning. But that scenario is very hypothetical, and it won’t keep me from using this awesome new feature.&lt;/p&gt;
+
+&lt;h3 id=&quot;clones&quot;&gt;Clones&lt;/h3&gt;
+
+&lt;p&gt;Apple has a nice overview of some of the new features, including the clone mechanism.&lt;sup id=&quot;fnref:apfs-overview&quot;&gt;&lt;a href=&quot;#fn:apfs-overview&quot; class=&quot;footnote&quot;&gt;8&lt;/a&gt;&lt;/sup&gt; Testing the clone facility is quite easy, if you simply copy something in finder, you will see the result: it is possible to copy a large file, say a 2&lt;abbr&gt;GB&lt;/abbr&gt; movie, an obscene amount of times almost instantly.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-clone-movie.png&quot; alt=&quot;APFS clone illustrated on some movies&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This feature is not without criticism. It does not work when you use &lt;code class=&quot;highlighter-rouge&quot;&gt;cp&lt;/code&gt; in the terminal, for example, because you need to use Apple &lt;abbr&gt;API&lt;/abbr&gt;s to access it. Also, it might not be overly useful since most programs will completely rewrite files when modifying them&lt;sup id=&quot;fnref:apfs-in-etail&quot;&gt;&lt;a href=&quot;#fn:apfs-in-etail&quot; class=&quot;footnote&quot;&gt;9&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;snapshots&quot;&gt;Snapshots&lt;/h3&gt;
+
+&lt;p&gt;This is the one feature that I haven’t been able to play around with too much yet, unfortunately. I’ve seen that it is actively used on my system, and I can list which snapshots exist using the &lt;code class=&quot;highlighter-rouge&quot;&gt;tmutil&lt;/code&gt; tool.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ tmutil listlocalsnapshots /
+com.apple.TimeMachine.2018-09-15-141751
+com.apple.TimeMachine.2018-09-17-214432
+com.apple.TimeMachine.2018-09-17-224235
+com.apple.TimeMachine.2018-09-17-234536
+com.apple.TimeMachine.2018-09-18-004444
+com.apple.TimeMachine.2018-09-18-192237
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From what I understand, snapshots are used before installing apps or updates to create a “known-good” point to get back to in case things get hairy. Apparently, it is also possible to mount them. But I will save this for another article on another day!&lt;/p&gt;
+
+&lt;h2 id=&quot;issues&quot;&gt;Issues&lt;/h2&gt;
+
+&lt;p&gt;The interesting thing with file systems is that they are good when you don’t notice them. They are there to store your data, and you should never have to directly interact with them. As long as they keep your data, all is good. As soon as they throw error messages at you, or corrupt your data, you know that something in going wrong.&lt;/p&gt;
+
+&lt;p&gt;I haven’t encountered any issues with &lt;abbr&gt;APFS&lt;/abbr&gt;, and I don’t think I will. It seems like a stable product, and since it is used by default on all new macOS installations and on iPhones as well, I’m sure it receives a huge amount of testing to make sure it runs well.&lt;/p&gt;
+
+&lt;p&gt;The only issue is that any applications that rely on specific filesystem features need to be adjusted. And that is the only area where I’ve run into an issue.&lt;/p&gt;
+
+&lt;h3 id=&quot;time-machine&quot;&gt;Time Machine&lt;/h3&gt;
+
+&lt;p&gt;Currently, Time Machine only supports storing its backups on &lt;abbr&gt;HFS+&lt;/abbr&gt;-formatted volumes. When you have an &lt;abbr&gt;APFS&lt;/abbr&gt;-formatted drive mounted and you try to switch to it, it will not show up in the Time Machine preference pane.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-time-machine-preferences.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I am very sure that this issue will be fixed very quickly, as I presume that Apple wants to switch all &lt;abbr&gt;HFS+&lt;/abbr&gt; volumes over to &lt;abbr&gt;APFS&lt;/abbr&gt; soon, since they probably don’t want to support both file systems indefinitely.&lt;/p&gt;
+
+&lt;p&gt;But in the meantime, there is a workaround that is not pretty but it works for me. I basically created a disk image by pressing &lt;kbd&gt;&amp;#8984;&lt;/kbd&gt;N in Disk Utility (File → New Image → Blank Image). I selected the &lt;em&gt;sparse bundle disk image&lt;/em&gt;, which is an image that only takes up as much space as it actually uses, gave it a descriptive name, set the size to 500&lt;abbr title=&quot;Gigabytes&quot;&gt;GB&lt;/abbr&gt; which should be plenty for my backups, and selected &lt;em&gt;Mac OS Extended (Journaled)&lt;/em&gt; as the file system instead of the default &lt;abbr&gt;APFS&lt;/abbr&gt;. This is important.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/apfs-time-machine-disk-image.png&quot; alt=&quot;APFS Time Machine disk image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, you need to make sure that the disk image is mounted. All you need to do to convince Time Machine to use it as backup disk is use the command-line tool &lt;code class=&quot;highlighter-rouge&quot;&gt;tmutil&lt;/code&gt;. If you named your volume something else than “Time Machine”, you’ll have to change that in the command obviously.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo tmutil setdestination &quot;/Volumes/Time Machine&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;So far, I think that &lt;abbr&gt;APFS&lt;/abbr&gt; is a very neat and stable system. I think it has some nice features, but it doesn’t go overboard resulting in a theoretically cool, but practically unstable file system.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;It’s a little more complicated than that, I know. &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:2&quot;&gt;
+      &lt;p&gt;Unless your operating system uses a microkernel. But that’s very unlikely. &lt;a href=&quot;#fnref:2&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:3&quot;&gt;
+      &lt;p&gt;VirtualBox, for example, uses a kernel module that manages to crash my macOS occasionally. &lt;a href=&quot;#fnref:3&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:4&quot;&gt;
+      &lt;p&gt;Unless they are &lt;a href=&quot;https://en.wikipedia.org/wiki/Hans_Reiser&quot;&gt;currently in jail&lt;/a&gt;, I suppose. &lt;a href=&quot;#fnref:4&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:hfs-floppy&quot;&gt;
+      &lt;p&gt;Actually, it would have also been designed with floppy disks in mind. Do you still remember those? Crazy how fast storage technology moves. &lt;a href=&quot;#fnref:hfs-floppy&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:apple-apfs&quot;&gt;
+      &lt;p&gt;See &lt;a href=&quot;https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/APFS_Guide/FAQ/FAQ.html&quot;&gt;Apple &lt;abbr&gt;APFS&lt;/abbr&gt; &lt;abbr&gt;FAQ&lt;/abbr&gt;&lt;/a&gt; &lt;a href=&quot;#fnref:apple-apfs&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:imore-apfs&quot;&gt;
+      &lt;p&gt;See &lt;a href=&quot;https://www.imore.com/apfs&quot;&gt;https://www.imore.com/apfs&lt;/a&gt; &lt;a href=&quot;#fnref:imore-apfs&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:apfs-overview&quot;&gt;
+      &lt;p&gt;See &lt;a href=&quot;https://developer.apple.com/documentation/foundation/file_system/about_apple_file_system#overview&quot;&gt;Apple &lt;abbr&gt;APFS&lt;/abbr&gt; overview&lt;/a&gt; &lt;a href=&quot;#fnref:apfs-overview&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:apfs-in-etail&quot;&gt;
+      &lt;p&gt;See Adam Leventhal’s excellent article &lt;a href=&quot;http://dtrace.org/blogs/ahl/2016/06/19/apfs-part1/&quot;&gt;&lt;abbr&gt;APFS&lt;/abbr&gt; in Detail&lt;/a&gt; &lt;a href=&quot;#fnref:apfs-in-etail&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">File systems are fascinating and scary. When I heard that Apple was working on its own in 2016, I was immediately interested. Now, in 2018, APFS is standard on both macOS and iOS.</summary></entry><entry><title type="html">Fresh system</title><link href="https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system" rel="alternate" type="text/html" title="Fresh system" /><published>2018-09-09T00:00:00+02:00</published><updated>2018-09-09T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system</id><content type="html" xml:base="https://blog.xfbs.net/posts/2018-09-09/setting-up-fresh-system">&lt;p&gt;I just bought a new MacBook since I managed to break my old one while travelling in Taiwan. I always love getting a new system, because the setting up phase is a good opportunity to get rid of old cruft and review what is essential for me.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/macos-fresh-screenshot.png&quot; alt=&quot;Clean and fresh macOS desktop&quot; /&gt;&lt;/p&gt;
 
