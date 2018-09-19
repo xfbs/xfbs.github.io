@@ -594,42 +594,35 @@ table {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin: -24px -37px;
-  margin-bottom: 1rem; }
+  margin-left: -12px; }
   @media (max-width: 600px) {
     .icon-grid {
-      margin: -12px -18px; } }
+      margin-left: -8px; } }
   .icon-grid div {
-    width: 72px;
-    height: 72px;
-    margin: 36px 36px;
-    line-height: 1; }
+    width: 108px;
+    height: auto; }
     @media (max-width: 600px) {
       .icon-grid div {
-        width: 48px;
-        height: 48px;
-        margin: 24px 18px; } }
+        width: 72px;
+        height: 72px; } }
     .icon-grid div a {
-      line-height: 1;
       color: #555; }
     .icon-grid div img {
-      width: 100%;
-      margin: 0;
-      border-radius: 5px;
-      line-height: 1; }
+      width: 72px;
+      margin: auto;
+      border-radius: 5px; }
+      @media (max-width: 600px) {
+        .icon-grid div img {
+          width: 48px; } }
     .icon-grid div div {
-      width: 108px;
+      width: 100%;
       height: auto;
       text-align: center;
       font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
-      font-size: 70%;
-      margin: 0;
-      margin-top: 0.3rem;
-      margin-right: -18px;
-      margin-left: -18px; }
+      font-size: 75%; }
       @media (max-width: 600px) {
         .icon-grid div div {
-          font-size: 60%; } }
+          font-size: 65%; } }
 
 img.cc-icon {
   display: inline;
