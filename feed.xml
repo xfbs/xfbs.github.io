@@ -1,4 +1,133 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2018-09-21T21:29:56+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Srcery Colorscheme</title><link href="https://blog.xfbs.net/posts/srcery-colors" rel="alternate" type="text/html" title="Srcery Colorscheme" /><published>2018-09-21T00:00:00+02:00</published><updated>2018-09-21T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/srcery-colors</id><content type="html" xml:base="https://blog.xfbs.net/posts/srcery-colors">&lt;p&gt;This week I had to set up a bunch of things for work. Since I spend a lot of time on the command line, I wanted to make it look comfortable. At first, I went with the default of black text on a white background, but soon enough I got tired of that. It’s more comfortable to look at a darker background. So I played around a bit and tried switching things around, but it never looked just right.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2018-09-24T01:26:04+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Tweaking ffmpeg</title><link href="https://blog.xfbs.net/posts/tweaking-ffmpeg" rel="alternate" type="text/html" title="Tweaking ffmpeg" /><published>2018-09-23T00:00:00+02:00</published><updated>2018-09-23T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/tweaking-ffmpeg</id><content type="html" xml:base="https://blog.xfbs.net/posts/tweaking-ffmpeg">&lt;p&gt;Today I spent some time exploring &lt;abbr&gt;ffmpeg&lt;/abbr&gt;. Kind of unintentionally, actually. I actually just wanted to record some screencasts with QuickTime to see what it can do. I didn’t know how easy it was—just open up QuickTime, select New Screen Recording, and off you go. But there is one issue.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/ffmpeg-terminal.png&quot; alt=&quot;ffmpeg transcoding a video&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Modern laptops have really insane resolutions. I remember those old &lt;abbr title=&quot;Cathode Ray Tube&quot;&gt;CRT&lt;/abbr&gt;s that had a resolution of maybe 1024x768. And those were considered fancy back them. There’s a good chance that you are older than me, so back in your time, things may have been even smaller. But modern laptops and their fancy high-pixel-density screens have a lot more pixels: on my laptop, which has a 13” screen, I have a resolution of about 2500x1800.&lt;/p&gt;
+
+&lt;p&gt;Now, obviously when recording the screen, all these pixels have to be stored somewhere. So it’s not surprising to see large files being output by QuickTime. After recording for about thirty minutes, I got a 4&lt;abbr&gt;GB&lt;/abbr&gt; file. With the poor internet that I have in my apartment, it would take months to upload a file like that.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, these days we have efficient codecs that can drastically reduce file sizes. There’s plenty to choose from, and they all have individual advantages. But the most popular format these days is &lt;abbr&gt;x264&lt;/abbr&gt; with &lt;abbr&gt;aac&lt;/abbr&gt; audio in a &lt;abbr&gt;mp4&lt;/abbr&gt; container.&lt;/p&gt;
+
+&lt;p&gt;And this is where &lt;abbr&gt;ffmpeg&lt;/abbr&gt; enters. It’s an open source tool that allows one to transcode video and audio files. Using it, I can take my file, which is already compressed, just not very much, and squeeze it into a very small file. I can also change the resolution, framerate, bitrate, audio codec, the options are almost unlimited.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/ffmpeg-files.png&quot; alt=&quot;Video before and after transcoding with ffmpeg&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But not all video is created equal. Screencasts of people typing into consoles can be compressed much more without losing too much quality than films of nature with a lot of moving parts. So the trick is to tweak the settings to get them just right: to get a video that is small, yet has a good quality. And that is exactly what I did. I mean, I tried. You’ll see.&lt;/p&gt;
+
+&lt;h2 id=&quot;installing&quot;&gt;Installing&lt;/h2&gt;
+
+&lt;p&gt;Before I could do anything with &lt;abbr&gt;ffmpeg&lt;/abbr&gt;, I first had to install it. For me, this was easy, since I have a package manager that does that for me. If you aren’t so lucky, you’ll probably find an installer somewhere on the net. But I used &lt;a href=&quot;https://brew.sh/&quot;&gt;homebrew&lt;/a&gt; to get everything set up.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install ffmpeg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I read online that another project, which started out as a fork of &lt;abbr&gt;ffmpeg&lt;/abbr&gt;, had it’s own binary with the same name and invocation&lt;sup id=&quot;fnref:avconv&quot;&gt;&lt;a href=&quot;#fn:avconv&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. Confusing! But form what I gathered, that’s no longer the case.&lt;/p&gt;
+
+&lt;h2 id=&quot;basic-usage&quot;&gt;Basic Usage&lt;/h2&gt;
+
+&lt;p&gt;To transcode anything with &lt;abbr&gt;ffmpeg&lt;/abbr&gt;, all you need to do is call it on the console. You need to give it an input file and specify an output. It can automatically recognize the extensions and it generally does what you’d expect.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i input.mov output.mp4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It can even do some fancy things such as &lt;a href=&quot;https://trac.ffmpeg.org/wiki/Capture/Desktop&quot;&gt;capture the screen&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -f avfoundation -i 0:1 output.mkv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, I didn’t find that to be terribly useful, as QuickTime does a better job. But it is interesting if you want to stream your screen to somewhere.&lt;/p&gt;
+
+&lt;h2 id=&quot;tweaking&quot;&gt;Tweaking&lt;/h2&gt;
+
+&lt;p&gt;The interesting bit is the &lt;a href=&quot;https://ffmpeg.org/ffmpeg.html&quot;&gt;options&lt;/a&gt; that &lt;abbr&gt;ffmpeg&lt;/abbr&gt; offers. And these are also somewhat confusing. For me, what I ended up using to convert my videos was a rather complicated invocation, and I needed to do a bunch of research to figure everything out to get there.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i input.mov -c:v libx264 -r 30 -vf scale=-1:1440 -crf 25 -preset slow -profile:v high -level 4.0 -c:a aac -b:a 192k -ar 48000 -pix_fmt yuv420p -movflags +faststart output.mp4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I’m not an expert on &lt;abbr&gt;ffmpeg&lt;/abbr&gt; in any way, and if you want to do anything fancy, you’ll have to google it just like I did. But I can explain to you what these options do and why I chose them. So let’s examine them, one by one.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-i input.mov
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This specifies that we are reading from the file &lt;code class=&quot;highlighter-rouge&quot;&gt;input.mov&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-c:v libx264
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This specifies that the codec we want to use (&lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt;) for the video stream (&lt;code class=&quot;highlighter-rouge&quot;&gt;:v&lt;/code&gt;) is x264 (&lt;code class=&quot;highlighter-rouge&quot;&gt;libx264&lt;/code&gt;). There are other codecs out there, some with better compression, but this one has a very broad support and good characteristics.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-r 30
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;QuickTime records my screen with 60fps. That’s great because it’s more smooth, but for screencasts you don’t really need all those extra frames, especially because they use up storage. So here I tell &lt;abbr&gt;ffmpeg&lt;/abbr&gt; to reduce it down to 30fps.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-vf scape=-1:1440
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;QuickTime also records my screen in its full, native resolution. Nice because you get that beautiful, crisp look, but horrible when it comes to file sizes. I set this to 1440p, which is also known as 2K. You can set this to anything you like, including full HD (1080p), HD (720p), or just any size you like in pixels. The &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt; here means that the other number is computed automatically.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-crf 25
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This one is a little bit special. Basically, there are multiple methods to tell &lt;abbr&gt;ffmpeg&lt;/abbr&gt; how much it should compress and what quality and file size you’d like. One way is to set a bandwidth, but this doesn’t always make sense because some parts of the video will need more (and they will be downgraded if the bandwidth is too low) whereas other parts will need less (so you will waste space with a constant bandwidth). The &lt;abbr&gt;crf&lt;/abbr&gt; means that you want a constant quality, which you can set between no compression (0) and maximum compression (51). This is good because it means that all parts have the same quality, regardless of how complex the scenes are.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-preset slow
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;There are some options that control how much &lt;abbr&gt;CPU&lt;/abbr&gt; power &lt;abbr&gt;ffmpeg&lt;/abbr&gt; invests to compress the video. This option tells it to favour using more &lt;abbr&gt;CPU&lt;/abbr&gt; power to get a better compression. If you have a beefier machine, you can even set it to &lt;em&gt;slowest&lt;/em&gt;. It will take longer, but you’ll get a better quality for the same file size.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-profile:v high -level 4.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From what I understand, these flags enable some features in the codec that might not be supported by all video players. There is a table&lt;sup id=&quot;fnref:x264-profile-support&quot;&gt;&lt;a href=&quot;#fn:x264-profile-support&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt; that shows which devices need which settings. With these here, some of the more fancy features are enabled, but devices before the iPhone 4S might not be able to play them.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-c:a aac
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This tells &lt;abbr&gt;ffmpeg&lt;/abbr&gt; to use &lt;abbr&gt;aac&lt;/abbr&gt; for the audio codec. You can also tell it to not touch the audio and just pass it through.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-b:a 192k
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since these screencasts don’t have any music in them, I can lower the bitrate of the audio to 192kbps. This is more than enough for voice.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-ar 48000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we are telling the audio codec that we want the audio to have a sample rate of 48kHz.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-pix_fmt yuv420p
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This one I don’t completely understand. From what I do understand, there are multiple ways to encode pixels, one of the most well-known encodings would be RGBA, which is a 32-bit encoding. Apparently &lt;abbr&gt;yuv420p&lt;/abbr&gt; is a sensible choice here.&lt;/p&gt;
+
+&lt;h2 id=&quot;results&quot;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;With these settings, I am able to convert a 255&lt;abbr&gt;MB&lt;/abbr&gt; file down to just 5&lt;abbr&gt;MB&lt;/abbr&gt; without losing any noticable quality. I think that is a really good result.&lt;/p&gt;
+
+&lt;p&gt;The one downside is that transcoding is quite computationally intensive. For a 30-minute video at my screen’s native resolution, my laptop needs around 40 minutes to transcode it with the invocation that I documented here. That’s alright for me since I don’t have that many things to transcode, but this is an example where it does make sense to get a beefier machine if you do this kind of stuff often.&lt;/p&gt;
+
+&lt;p&gt;As a demonstration, I’ve recorded myself writing this blog post. It was originally a 5&lt;abbr&gt;GB&lt;/abbr&gt; video, but I sped it up (since I type slow and it’s boring to watch) four times and downscaled it. I ended up with a ten minutes long, 30&lt;abbr&gt;MB&lt;/abbr&gt;  large 2K quality file. Success!&lt;/p&gt;
+
+&lt;div style=&quot;margin:0;width=100%;&quot; class=&quot;embed-container&quot;&gt;
+  &lt;iframe src=&quot;https://player.vimeo.com/video/291406117&quot; width=&quot;800&quot; height=&quot;600&quot; frameborder=&quot;0&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;
+  &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Codecs are amazing. It feels like magic when you have a secret command that you can run to get your video file down to just two percent of its size. But there is actually a lot of engineering behind that, not anything supernatural. It’s not easy to hit that sweet spot where you have a file with a good quality, yet a small file size, but it is possible. It just takes some time and experimentation.&lt;/p&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:avconv&quot;&gt;
+      &lt;p&gt;See &lt;a href=&quot;https://stackoverflow.com/questions/9477115/what-are-the-differences-and-similarities-between-ffmpeg-libav-and-avconv&quot;&gt;this StackOverflow question&lt;/a&gt; for a little bit of background. &lt;a href=&quot;#fnref:avconv&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:x264-profile-support&quot;&gt;
+      &lt;p&gt;See &lt;a href=&quot;H.264&quot;&gt;Encode/H.264&lt;/a&gt; on the &lt;abbr&gt;ffmpeg&lt;/abbr&gt; wiki. &lt;a href=&quot;#fnref:x264-profile-support&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">Today I spent some time exploring ffmpeg. Kind of unintentionally, actually. I actually just wanted to record some screencasts with QuickTime to see what it can do. I didn’t know how easy it was—just open up QuickTime, select New Screen Recording, and off you go. But there is one issue.</summary></entry><entry><title type="html">Srcery Colorscheme</title><link href="https://blog.xfbs.net/posts/srcery-colors" rel="alternate" type="text/html" title="Srcery Colorscheme" /><published>2018-09-21T00:00:00+02:00</published><updated>2018-09-21T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/srcery-colors</id><content type="html" xml:base="https://blog.xfbs.net/posts/srcery-colors">&lt;p&gt;This week I had to set up a bunch of things for work. Since I spend a lot of time on the command line, I wanted to make it look comfortable. At first, I went with the default of black text on a white background, but soon enough I got tired of that. It’s more comfortable to look at a darker background. So I played around a bit and tried switching things around, but it never looked just right.&lt;/p&gt;
 
 &lt;p&gt;I need to get things to a state where I’m comfortable using them, but I want to refrain from customizing things too much, because it’s too much of a distration. It’s better to use things as they are out-of-the-box, or maybe install a little plugin, but I don’t really want to have to manually tweak things.&lt;/p&gt;
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+
+  <title>
+    
+      Tweaking ffmpeg &middot; xfbs:blog
+    
+  </title>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet">
+
+  <!-- MathJaX -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" type="image/svg+xml" size="any" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.xfbs.net/feed.xml" title="xfbs:blog" />
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/">
+          <h2 class="nav-title">xfbs:blog</h2>
+        </a>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/">Posts</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    
+      <br>
+      <time datetime="2018-09-23 00:00:00 +0200">September 23, 2018</time>
+    
+  </div>
+  <h1 class="post-title">Tweaking ffmpeg</h1>
+  <div class="post-line"></div>
+
+  <p>Today I spent some time exploring <abbr>ffmpeg</abbr>. Kind of unintentionally, actually. I actually just wanted to record some screencasts with QuickTime to see what it can do. I didn’t know how easy it was—just open up QuickTime, select New Screen Recording, and off you go. But there is one issue.</p>
+
+<p><img src="/assets/images/ffmpeg-terminal.png" alt="ffmpeg transcoding a video" /></p>
+
+<p>Modern laptops have really insane resolutions. I remember those old <abbr title="Cathode Ray Tube">CRT</abbr>s that had a resolution of maybe 1024x768. And those were considered fancy back them. There’s a good chance that you are older than me, so back in your time, things may have been even smaller. But modern laptops and their fancy high-pixel-density screens have a lot more pixels: on my laptop, which has a 13” screen, I have a resolution of about 2500x1800.</p>
+
+<p>Now, obviously when recording the screen, all these pixels have to be stored somewhere. So it’s not surprising to see large files being output by QuickTime. After recording for about thirty minutes, I got a 4<abbr>GB</abbr> file. With the poor internet that I have in my apartment, it would take months to upload a file like that.</p>
+
+<p>Thankfully, these days we have efficient codecs that can drastically reduce file sizes. There’s plenty to choose from, and they all have individual advantages. But the most popular format these days is <abbr>x264</abbr> with <abbr>aac</abbr> audio in a <abbr>mp4</abbr> container.</p>
+
+<p>And this is where <abbr>ffmpeg</abbr> enters. It’s an open source tool that allows one to transcode video and audio files. Using it, I can take my file, which is already compressed, just not very much, and squeeze it into a very small file. I can also change the resolution, framerate, bitrate, audio codec, the options are almost unlimited.</p>
+
+<p><img src="/assets/images/ffmpeg-files.png" alt="Video before and after transcoding with ffmpeg" /></p>
+
+<p>But not all video is created equal. Screencasts of people typing into consoles can be compressed much more without losing too much quality than films of nature with a lot of moving parts. So the trick is to tweak the settings to get them just right: to get a video that is small, yet has a good quality. And that is exactly what I did. I mean, I tried. You’ll see.</p>
+
+<h2 id="installing">Installing</h2>
+
+<p>Before I could do anything with <abbr>ffmpeg</abbr>, I first had to install it. For me, this was easy, since I have a package manager that does that for me. If you aren’t so lucky, you’ll probably find an installer somewhere on the net. But I used <a href="https://brew.sh/">homebrew</a> to get everything set up.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install ffmpeg
+</code></pre></div></div>
+
+<p>I read online that another project, which started out as a fork of <abbr>ffmpeg</abbr>, had it’s own binary with the same name and invocation<sup id="fnref:avconv"><a href="#fn:avconv" class="footnote">1</a></sup>. Confusing! But form what I gathered, that’s no longer the case.</p>
+
+<h2 id="basic-usage">Basic Usage</h2>
+
+<p>To transcode anything with <abbr>ffmpeg</abbr>, all you need to do is call it on the console. You need to give it an input file and specify an output. It can automatically recognize the extensions and it generally does what you’d expect.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg -i input.mov output.mp4
+</code></pre></div></div>
+
+<p>It can even do some fancy things such as <a href="https://trac.ffmpeg.org/wiki/Capture/Desktop">capture the screen</a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg -f avfoundation -i 0:1 output.mkv
+</code></pre></div></div>
+
+<p>However, I didn’t find that to be terribly useful, as QuickTime does a better job. But it is interesting if you want to stream your screen to somewhere.</p>
+
+<h2 id="tweaking">Tweaking</h2>
+
+<p>The interesting bit is the <a href="https://ffmpeg.org/ffmpeg.html">options</a> that <abbr>ffmpeg</abbr> offers. And these are also somewhat confusing. For me, what I ended up using to convert my videos was a rather complicated invocation, and I needed to do a bunch of research to figure everything out to get there.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg -i input.mov -c:v libx264 -r 30 -vf scale=-1:1440 -crf 25 -preset slow -profile:v high -level 4.0 -c:a aac -b:a 192k -ar 48000 -pix_fmt yuv420p -movflags +faststart output.mp4
+</code></pre></div></div>
+
+<p>I’m not an expert on <abbr>ffmpeg</abbr> in any way, and if you want to do anything fancy, you’ll have to google it just like I did. But I can explain to you what these options do and why I chose them. So let’s examine them, one by one.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-i input.mov
+</code></pre></div></div>
+
+<p>This specifies that we are reading from the file <code class="highlighter-rouge">input.mov</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-c:v libx264
+</code></pre></div></div>
+
+<p>This specifies that the codec we want to use (<code class="highlighter-rouge">-c</code>) for the video stream (<code class="highlighter-rouge">:v</code>) is x264 (<code class="highlighter-rouge">libx264</code>). There are other codecs out there, some with better compression, but this one has a very broad support and good characteristics.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-r 30
+</code></pre></div></div>
+
+<p>QuickTime records my screen with 60fps. That’s great because it’s more smooth, but for screencasts you don’t really need all those extra frames, especially because they use up storage. So here I tell <abbr>ffmpeg</abbr> to reduce it down to 30fps.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-vf scape=-1:1440
+</code></pre></div></div>
+
+<p>QuickTime also records my screen in its full, native resolution. Nice because you get that beautiful, crisp look, but horrible when it comes to file sizes. I set this to 1440p, which is also known as 2K. You can set this to anything you like, including full HD (1080p), HD (720p), or just any size you like in pixels. The <code class="highlighter-rouge">-1</code> here means that the other number is computed automatically.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-crf 25
+</code></pre></div></div>
+
+<p>This one is a little bit special. Basically, there are multiple methods to tell <abbr>ffmpeg</abbr> how much it should compress and what quality and file size you’d like. One way is to set a bandwidth, but this doesn’t always make sense because some parts of the video will need more (and they will be downgraded if the bandwidth is too low) whereas other parts will need less (so you will waste space with a constant bandwidth). The <abbr>crf</abbr> means that you want a constant quality, which you can set between no compression (0) and maximum compression (51). This is good because it means that all parts have the same quality, regardless of how complex the scenes are.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-preset slow
+</code></pre></div></div>
+
+<p>There are some options that control how much <abbr>CPU</abbr> power <abbr>ffmpeg</abbr> invests to compress the video. This option tells it to favour using more <abbr>CPU</abbr> power to get a better compression. If you have a beefier machine, you can even set it to <em>slowest</em>. It will take longer, but you’ll get a better quality for the same file size.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-profile:v high -level 4.0
+</code></pre></div></div>
+
+<p>From what I understand, these flags enable some features in the codec that might not be supported by all video players. There is a table<sup id="fnref:x264-profile-support"><a href="#fn:x264-profile-support" class="footnote">2</a></sup> that shows which devices need which settings. With these here, some of the more fancy features are enabled, but devices before the iPhone 4S might not be able to play them.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-c:a aac
+</code></pre></div></div>
+
+<p>This tells <abbr>ffmpeg</abbr> to use <abbr>aac</abbr> for the audio codec. You can also tell it to not touch the audio and just pass it through.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-b:a 192k
+</code></pre></div></div>
+
+<p>Since these screencasts don’t have any music in them, I can lower the bitrate of the audio to 192kbps. This is more than enough for voice.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-ar 48000
+</code></pre></div></div>
+
+<p>Here we are telling the audio codec that we want the audio to have a sample rate of 48kHz.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-pix_fmt yuv420p
+</code></pre></div></div>
+
+<p>This one I don’t completely understand. From what I do understand, there are multiple ways to encode pixels, one of the most well-known encodings would be RGBA, which is a 32-bit encoding. Apparently <abbr>yuv420p</abbr> is a sensible choice here.</p>
+
+<h2 id="results">Results</h2>
+
+<p>With these settings, I am able to convert a 255<abbr>MB</abbr> file down to just 5<abbr>MB</abbr> without losing any noticable quality. I think that is a really good result.</p>
+
+<p>The one downside is that transcoding is quite computationally intensive. For a 30-minute video at my screen’s native resolution, my laptop needs around 40 minutes to transcode it with the invocation that I documented here. That’s alright for me since I don’t have that many things to transcode, but this is an example where it does make sense to get a beefier machine if you do this kind of stuff often.</p>
+
+<p>As a demonstration, I’ve recorded myself writing this blog post. It was originally a 5<abbr>GB</abbr> video, but I sped it up (since I type slow and it’s boring to watch) four times and downscaled it. I ended up with a ten minutes long, 30<abbr>MB</abbr>  large 2K quality file. Success!</p>
+
+<div style="margin:0;width=100%;" class="embed-container">
+  <iframe src="https://player.vimeo.com/video/291406117" width="800" height="600" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">
+  </iframe>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Codecs are amazing. It feels like magic when you have a secret command that you can run to get your video file down to just two percent of its size. But there is actually a lot of engineering behind that, not anything supernatural. It’s not easy to hit that sweet spot where you have a file with a good quality, yet a small file size, but it is possible. It just takes some time and experimentation.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:avconv">
+      <p>See <a href="https://stackoverflow.com/questions/9477115/what-are-the-differences-and-similarities-between-ffmpeg-libav-and-avconv">this StackOverflow question</a> for a little bit of background. <a href="#fnref:avconv" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:x264-profile-support">
+      <p>See <a href="H.264">Encode/H.264</a> on the <abbr>ffmpeg</abbr> wiki. <a href="#fnref:x264-profile-support" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+</div>
+
+<div class="pagination">
+  
+  
+    <a href="/posts/srcery-colors" class="right arrow">&#8594;</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        <a href="/legal">Legal</a> &middot; 
+        <a href="/privacy">Privacy</a> &middot; 
+        Made with <a href="https://jekyllrb.com">Jekyll</a> using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme &middot;
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Licensed under Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)">
+          <img title="Creative Commons" src="/assets/images/cc-logo.svg" class="cc-icon" />
+          <img title="Share" src="/assets/images/cc-sa.svg" class="cc-icon" />
+          <img title="Adapt" src="/assets/images/cc-sa.svg" class="cc-icon" />
+        </a>
+      </span>
+    </footer>
+  </body>
+</html>
