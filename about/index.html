@@ -14,10 +14,12 @@
 
   <!-- Style -->
   <link rel="stylesheet" href="/assets/main.css">
-  <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet"> -->
 
-  <!-- MathJaX -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>
+  <!-- MathJaX
+    Disabled for now. I will at some point render it server-side or self-host.
+  -->
+  <!--<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>-->
 
   <!-- Favicon -->
   <link rel="shortcut icon" href="/favicon.ico">
@@ -64,6 +66,21 @@
 <div title="GitHub"><a href="https://github.com/xfbs"><img src="https://github.com/apple-touch-icon.png" /><div>GitHub</div></a></div>
 <div title="GitLab"><a href="https://gitlab.com/xfbs"><img src="https://gitlab.com/apple-touch-icon.png" /><div>GitLab</div></a></div>
 </div>
+
+<h2 id="keys">Keys</h2>
+
+<p>My <abbr>GPG</abbr> key has the following fingerprint:</p>
+
+<p>I have a <abbr>GPG</abbr> key that you can use to send me encrypted messages or verify that something I signed is indeed from me. Here is the fingerprint of this key.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>8BBF 2EA1 2400 368A BE01  D79F B39B 4873 181F 7623
+</code></pre></div></div>
+
+<p>You can download it <a href="/assets/keys/pelsen.asc">here</a> or fetch it from a public keyserver.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --recv-keys 8BBF2EA12400368ABE01
+</code></pre></div></div>
+
 
 
 </div>
