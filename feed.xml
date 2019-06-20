@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2019-06-20T17:17:27+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Malware Analaysis on macOS, Part 1: Bash</title><link href="https://blog.xfbs.net/posts/malware-analysis-bash" rel="alternate" type="text/html" title="Malware Analaysis on macOS, Part 1: Bash" /><published>2019-06-17T00:00:00+02:00</published><updated>2019-06-17T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/malware-analysis-bash</id><content type="html" xml:base="https://blog.xfbs.net/posts/malware-analysis-bash">&lt;p&gt;&lt;em&gt;This is part one of a multi-part series where I reverse engineer some shitty macOS malware. All the code is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99&quot;&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2019-06-20T17:25:02+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Malware Analaysis on macOS, Part 1: Bash</title><link href="https://blog.xfbs.net/posts/malware-analysis-bash" rel="alternate" type="text/html" title="Malware Analaysis on macOS, Part 1: Bash" /><published>2019-06-17T00:00:00+02:00</published><updated>2019-06-17T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/malware-analysis-bash</id><content type="html" xml:base="https://blog.xfbs.net/posts/malware-analysis-bash">&lt;p&gt;&lt;em&gt;This is part one of a multi-part series where I reverse engineer some shitty macOS malware. All the code is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99&quot;&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;I didn’t even know there was malware for macOS out there. I mean, I knew it existed, I just didn’t think I’d ever encounter any. These days with all the fancy package managers (homebrew) and App Stores, it’s extremely rare that one has to download software from the scary internet. But today was such a case, at least, in a way.&lt;/p&gt;
 
@@ -8,7 +8,7 @@
 
 &lt;p&gt;So I went into the wild, wild internet and tried to find a torrent for it. That would be a much faster way of downloading High Sierra. So I managed to find a website that offered to download macOS High Sierra 10.13.6, exactly what I was looking for, and so promptly downloaded it.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/mac-torrents-malware.png&quot; alt=&quot;Phony website hosting malware&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/mac-torrents-malware.png&quot; alt=&quot;Phony website hosting malware&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;But of course, you can’t trust the internet. Instead of a &lt;code class=&quot;highlighter-rouge&quot;&gt;.torrent&lt;/code&gt; file, I go a &lt;code class=&quot;highlighter-rouge&quot;&gt;.dmg&lt;/code&gt; that was only around 500 kB. That can’t be right! Normally I would just delete whatever they gave me and go back to Apple’s safe but slightly slower download. But because we are professionals and this is the first time I have encountered macOS malware in the wild, I thought it might be fun to see what I got there, to reverse it a bit.&lt;/p&gt;
 
@@ -53,7 +53,7 @@ c9e2a57741c4117b59c4cd3a30167a564fde76795df7f4b3682bef283fae54f9  macos_installe
 
 &lt;p&gt;I chose one of these &lt;code class=&quot;highlighter-rouge&quot;&gt;.dmg&lt;/code&gt; files and mounted them. It looks like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/malware-installer.png&quot; alt=&quot;Malware installer&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-installer.png&quot; alt=&quot;Malware installer&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;All of these are perfectly valid DiskImage files. If you don’t know macOS, DiskImage files are like a hybrid between a ZIP file and a virtual CD, in that they are compressed, and you have to “mount” them. They are also read-only and typically used to distribute software.&lt;/p&gt;
 
@@ -81,7 +81,7 @@ Internal requirements count=2 size=236
 
 &lt;p&gt;That still doesn’t tell us what this thing actually does. To find that out, we need to actually inspect the code that it is running. So, I just naïvely opened it in &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt;, and well, hello there..&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/malware-vim.png&quot; alt=&quot;Malware bash script&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-vim.png&quot; alt=&quot;Malware bash script&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Turns out it’s just a &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; script. That’s interesting, I guess I would have expected something.. sophisticated. But it does make sense, if you’re going to write malware for a system, you want to do it as cheaply as possible, so you’ll use whatever comes preinstalled. And writing a little bash script works because macOS comes with &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;openssl&lt;/code&gt; preinstalled. But what does this thing even do?&lt;/p&gt;
 
@@ -94,13 +94,13 @@ $ sha256sum stage_two.sh
 
 &lt;p&gt;The result of decrypting the file is, unsurprisingly, another bash script.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/malware-decrypted.png&quot; alt=&quot;Malware decrypted script&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-decrypted.png&quot; alt=&quot;Malware decrypted script&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This code is obfuscated, but in such a trivial way that we can easily decode it. Very obvious are the two variables, &lt;code class=&quot;highlighter-rouge&quot;&gt;_y&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_t&lt;/code&gt;. These are a key and some data (interestingly, the same key as the one this file was encrypted with). The functions &lt;code class=&quot;highlighter-rouge&quot;&gt;_m&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_l&lt;/code&gt; use these variables to decrypt something, a third bash script, which is then evaluated.&lt;/p&gt;
 
 &lt;p&gt;I went through the code to deobfuscate it, sprinkle some comments into it and I was able to learn some things on the way. For example, &lt;code class=&quot;highlighter-rouge&quot;&gt;${#1}&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; syntax for getting the length of the string variable &lt;code class=&quot;highlighter-rouge&quot;&gt;$1&lt;/code&gt;. The deobfuscated version is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99#file-macos_malware_deobfuscated-sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/malware-deobfuscated.png&quot; alt=&quot;Malware deobfuscated&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-deobfuscated.png&quot; alt=&quot;Malware deobfuscated&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You can see that they implemented some pseudo-encryption using XOR. If you didn’t know, you can parse hex numbers and perform XOR operations on them with a syntax similar to this:&lt;/p&gt;
 
@@ -121,7 +121,7 @@ $ ./stage_two.sh &amp;gt; stage_three.sh
 
 &lt;p&gt;So, running all that, we get to the next stage, stage three. This one isn’t even obfuscated at all, it’s just a script that seems to download something from the net and execute it. It is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99#file-macos_malware_payload-sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/macos-malware-payload.png&quot; alt=&quot;MacOS malware payload&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/macos-malware-payload.png&quot; alt=&quot;MacOS malware payload&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This looks like it’s getting somewhere fun. Interestingly, the password is still the same, they used &lt;code class=&quot;highlighter-rouge&quot;&gt;2822812613&lt;/code&gt; as the password at every stage. We can go through these variables they are setting, to find out what kind of information is passed on to their server, and download whatever their server gives us.&lt;/p&gt;
 
