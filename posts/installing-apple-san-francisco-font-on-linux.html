@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+
+  <title>
+    
+      Installing Apple San Francisco Fonts on Linux &middot; xfbs:blog
+    
+  </title>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet"> -->
+
+  <!-- MathJaX
+    Disabled for now. I will at some point render it server-side or self-host.
+  -->
+  <!--<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>-->
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" type="image/svg+xml" size="any" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.xfbs.net/feed.xml" title="xfbs:blog" />
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/">
+          <h2 class="nav-title">xfbs:blog</h2>
+        </a>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/">Posts</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    
+      <br>
+      <time datetime="2020-06-04 00:00:00 +0200">June 04, 2020</time>
+    
+  </div>
+  <h1 class="post-title">Installing Apple San Francisco Fonts on Linux</h1>
+  <div class="post-line"></div>
+
+  <p>Apple has always had a knack for producing and using high-quality typography.
+Not too long ago, they switched the font for their UI from the classic
+Helvetica Neue (a typeface originating from Switzerland, known for precision
+watches) over to their own custom typeface, which they called San Francisco.</p>
+
+<p><img src="/assets/images/sf-pro-font.png" alt="Apple SF Pro Font" /></p>
+
+<p>I like this font family so much that I’ve started using the monospaced variant
+for my default Terminal font. It replaced the Menlo I was using before, which
+is also very legible and has served me very well.</p>
+
+<p><img src="/assets/images/alacritty-sf-mono.png" alt="Alacritty with SF Mono Font" /></p>
+
+<p>I try to use the same software and configuration on different platforms. My
+terminal emulator, Alacritty, is written in Rust and cross-platform. The tools
+I use daily, which is mostly <code class="highlighter-rouge">tmux</code> and <code class="highlighter-rouge">vim</code> for development, similarly work
+on all platforms. However, Linux does not have the San Francisco typeface
+available, out of the box, for licensing reasons.</p>
+
+<p>Apple offers downloads of its San Francisco fonts for free from its <a href="https://developer.apple.com/fonts">developer
+page</a>.</p>
+
+<p><img src="/assets/images/apple-developer-fonts.png" alt="Apple Developer Fonts Download Page" /></p>
+
+<p>I wanted to get those fonts installed on my Linux machines as well, so that
+I can use exactly the same Alacritty configuration on all platforms. However,
+they only offer the fonts as a <code class="highlighter-rouge">.dmg</code> download, which is a disk image file and
+is how software is typically distributed on macOS (it’s mounted rather than
+uncompressed, so it behaves more like an inserted CD drive, and has the advantage
+that you can run Applications from mounted, compressed disk images without
+having to unpack them first). The question is, can I get Linux to extract
+this somehow? After all, Apple’s macOS is heavily UNIX-based.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wget -q https://developer.apple.com/design/downloads/SF-Font-Pro.dmg
+$ file SF-Font-Pro.dmg
+SF-Font-Pro.dmg: zlib compressed data
+</code></pre></div></div>
+
+<p>Interesting, so a <code class="highlighter-rouge">.dmg</code> file is just some zlib-compressed blob, similar to
+how a <code class="highlighter-rouge">.tar.gz</code> file is a gzip-compressed tar blob. The <code class="highlighter-rouge">7z</code> command from the
+<code class="highlighter-rouge">p7zip</code> package can extract a surprising amount of archives, and it can easily
+extract disk image files, too.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ 7z -oSF-Font-Pro x SF-Font-Pro.dmg
+$ cd SF-Font-Pro
+$ ls
+SanFranciscoPro
+$ ls SanFranciscoPro
+'[HFS+ Private Data]'  'San Francisco Pro.pkg'
+</code></pre></div></div>
+
+<p>Okay, so this disk image file contains a <code class="highlighter-rouge">.pkg</code> file. The HFS+ Private Data
+folder can be ignored, as it is empty. What’s in the <code class="highlighter-rouge">.pkg</code> file? Let’s find out.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd SanFranciscoPro
+$ file 'San Francisco Pro.pkg'
+San Francisco Pro.pkg: xar archive version 1, SHA-1 checksum
+</code></pre></div></div>
+
+<p>A XAR archive, Apple likes to use those. It’s similar to a TAR archive, but it
+uses XML for the table of contents. We don’t have anything on Ubuntu to unpack
+this natively, so we’ll have to build something. Thankfully, there’s some code
+up on Google Code that we can compile and use to unpack this.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~/Downloads
+$ wget -q https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/xar/xar-1.5.2.tar.gz
+$ tar xf xar-1.5.2.tar.gz
+$ cd xar-1.5.2
+$ ./configure
+checking for gcc... gcc
+...
+$ make -j 4
+...
+$ ./src/xar --version
+xar 1.5.2
+</code></pre></div></div>
+
+<p>After running this, we have a working build of XAR 1.5.2 in the <code class="highlighter-rouge">src/</code> folder.
+We can now use this to unpack the San Francisco Pro font package.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir unpacked &amp;&amp; cd unpacked
+$ ../../../xar-1.5.2/src/xar -x -f '../San Francisco Pro.pkg'
+$ ls -l
+-rwxr-xr-x 1 patrick patrick 546 Oct 28  2019 Distribution
+drwxr-xr-x 1 patrick patrick  26 Jun  4 11:34 Resources
+drwxr-xr-x 1 patrick patrick  42 Jun  4 11:34 SanFranciscoPro.pkg
+$ ls -lh SanFranciscoPro.pkg
+-rwxr-xr-x 1 patrick patrick 2.2K Oct 28  2019 Bom
+-rwxr-xr-x 1 patrick patrick  287 Oct 28  2019 PackageInfo
+-rwxr-xr-x 1 patrick patrick  28M Oct 28  2019 Payload
+</code></pre></div></div>
+
+<p>We have a few uninteresting files, but the <code class="highlighter-rouge">Payload</code> file inside the
+SanFranciscoPro.pkg folder is what we’re interested in, because that seems
+to contain some data. Let’s take a closer peek at it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd SanFranciscoPro.pkg
+$ file Payload
+Payload: gzip compressed data, from Unix
+</code></pre></div></div>
+
+<p>It’s gzip compressed data, that’s something we can handle. But what’s inside?
+We can find out, too.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gunzip &lt; Payload | file -
+/dev/stdin: ASCII cpio archive (pre-ARV4 or odc)
+</code></pre></div></div>
+
+<p>A CPIO archive. I’ve heard of this only from reading the POSIX standard, CPIO
+is similar to <code class="highlighter-rouge">tar</code>, if I understand it correctly. So we can use <code class="highlighter-rouge">cpio</code> to extract
+that.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gunzip &lt; Payload | cpio -i
+85030 blocks
+$ ls
+Bom  Library  PackageInfo  Payload
+</code></pre></div></div>
+
+<p>Extracting this has produced a <code class="highlighter-rouge">Library</code> folder. That sounds suspiciously like
+a macOS filesystem folder.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls Library
+Fonts
+$ ls Library/Fonts
+SF-Pro-Display-BlackItalic.otf
+...
+</code></pre></div></div>
+
+<p>Jackpot!</p>
+
+<p>All that’s left to do is to install them on the local system. This is done
+easily by copying them to the <code class="highlighter-rouge">~/.fonts</code> folder and updating the font cache.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir -p ~/.fonts/SF-Pro
+$ cp Library/Fonts/*.otf ~/.fonts/SF-Pro/
+$ fc-cache -vf
+</code></pre></div></div>
+
+<p>This should result in the fonts being available and ready to use.</p>
+
+
+
+</div>
+
+<div class="pagination">
+  
+  
+    <a href="/posts/malware-analysis-bash" class="right arrow">&#8594;</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        <a href="/legal">Legal</a> &middot; 
+        <a href="/privacy">Privacy</a> &middot; 
+        Made with <a href="https://jekyllrb.com">Jekyll</a> using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme &middot;
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Licensed under Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)">
+          <img title="Creative Commons" src="/assets/images/cc-logo.svg" class="cc-icon" />
+          <img title="Share" src="/assets/images/cc-sa.svg" class="cc-icon" />
+          <img title="Adapt" src="/assets/images/cc-by.svg" class="cc-icon" />
+        </a>
+      </span>
+    </footer>
+  </body>
+</html>
