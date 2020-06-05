@@ -1,4 +1,249 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2020-06-04T12:38:58+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">Installing Apple San Francisco Fonts on Linux</title><link href="https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux" rel="alternate" type="text/html" title="Installing Apple San Francisco Fonts on Linux" /><published>2020-06-04T00:00:00+02:00</published><updated>2020-06-04T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux</id><content type="html" xml:base="https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux">&lt;p&gt;Apple has always had a knack for producing and using high-quality typography.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2020-06-05T14:13:59+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">APFS Compression on my MacBook</title><link href="https://blog.xfbs.net/posts/enabling-apfs-compression" rel="alternate" type="text/html" title="APFS Compression on my MacBook" /><published>2020-06-05T00:00:00+02:00</published><updated>2020-06-05T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/enabling-apfs-compression</id><content type="html" xml:base="https://blog.xfbs.net/posts/enabling-apfs-compression">&lt;p&gt;In this post, I will take a look at how transparent file compression can
+be enabled on Apple machines using APFS, how effective it is and how we can
+get information about the actual size of a file on disk from the kernel.&lt;/p&gt;
+
+&lt;p&gt;I’ve tried a lot of different operating systems and hardware manufacturers, but
+like a lot of people in computer science, I eventually got stuck with Apple’s
+MacBook Pro. It’s well-known that Apple knows how much customers love their hardware, and
+so they charge a lot of some things, such as SSD size. I don’t always go for
+the biggest possible options, because as a student I can’t always afford to. 
+As a result of this, I sometimes run into issues with not having enough disk
+space on my system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/mac-disk-usage.png&quot; alt=&quot;Disk Usage as reported by Daisy Disk on my MacBook Pro&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What I do in that case is go through my files and offload things I don’t
+actually need to an external drive. However, looking at the output of
+&lt;a href=&quot;https://daisydiskapp.com&quot;&gt;Daisy Disk&lt;/a&gt;, which is similar to GNOME’s
+&lt;a href=&quot;https://wiki.gnome.org/action/show/Apps/DiskUsageAnalyzer?action=show&amp;amp;redirect=Apps%2FBaobab&quot;&gt;Disk Usage Analyzer&lt;/a&gt;,
+but prettier and commercial, shows that there’s a few gigabytes of stuff
+in my &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/mac-disk-usage-usr-local.png&quot; alt=&quot;Disk Usage as reported by Daisy Disk on my MacBook Pro&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That is where macOS’s package manager &lt;a href=&quot;https://brew.sh/&quot;&gt;Homebrew&lt;/a&gt; installs
+things to, and also where my TeX Live installation sits. I figure that these
+are both things that don’t change too often and are therefore prime candidates
+for compression.&lt;/p&gt;
+
+&lt;p&gt;Apple’s filesystems – HFS+, and APFS, which has recently replaced the former
+on SSD media – both support transparent compression, meaning that the
+filesystem itself handles the compression, and applications don’t (shouldn’t)
+notice the difference.&lt;/p&gt;
+
+&lt;p&gt;There is a tool that we can use to play with it, and try the compression.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://github.com/RJVB/afsctool
+$ cd afsctool
+$ brew install google-sparsehash zlib cmake pkgconfig
+$ PKG_CONFIG_PATH=/usr/local/opt/zlib/lib/pkgconfig
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I ran into some issues building this and I had to run this command (taken
+from &lt;a href=&quot;https://github.com/PointCloudLibrary/pcl/issues/2601&quot;&gt;here&lt;/a&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo xcode-select -s /Library/Developer/CommandLineTools
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and then recreate the build folder and re-run &lt;code class=&quot;highlighter-rouge&quot;&gt;cmake&lt;/code&gt; in it to make it work,
+I don’t exactly understand why that is, but it worked. The result of that is
+an &lt;code class=&quot;highlighter-rouge&quot;&gt;afsctool&lt;/code&gt; binary, which can be used to play with compression.&lt;/p&gt;
+
+&lt;p&gt;First, I figured I’d see how many files in my &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/&lt;/code&gt; are already
+compressed. Who knows, maybe someone already had this idea. The tool accepts
+a &lt;code class=&quot;highlighter-rouge&quot;&gt;-l&lt;/code&gt; switch, which lists files (in a given folder) which are already
+compressed.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ ./afsctool -l /usr/local/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, it didn’t return anything, suggesting that I don’t have anything
+that is compressed in there at the moment. That’s a good thing, it means that
+I can try enabling it to see what it does.&lt;/p&gt;
+
+&lt;p&gt;First, I decided to try and see what would happen if I compress the repository
+of &lt;code class=&quot;highlighter-rouge&quot;&gt;afsctool&lt;/code&gt; using it.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ du -hd 0
+4.4M    .
+$ ./build/afsctool -c .
+/Users/pelsen/Projects/Playground/afsctool/.:
+Number of HFS+/APFS compressed files: 127
+$ du -hd 0
+1.6M    .
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, this already brings an improvement of more than 50% on this repository.&lt;/p&gt;
+
+&lt;h2 id=&quot;querying-compressed-size&quot;&gt;Querying Compressed Size&lt;/h2&gt;
+
+&lt;p&gt;The difference in size can be seen with &lt;code class=&quot;highlighter-rouge&quot;&gt;du&lt;/code&gt;. I wonder how &lt;code class=&quot;highlighter-rouge&quot;&gt;du&lt;/code&gt; actually gets
+the true (compressed) size of the file. My first thought was that the &lt;code class=&quot;highlighter-rouge&quot;&gt;stat()&lt;/code&gt;
+syscall might return the compressed size, but verifying that turned out to be
+false.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ dd if=/dev/zero of=file bs=10k count=10
+10+0 records in
+10+0 records out
+102400 bytes transferred in 0.000336 secs (304607610 bytes/sec)
+$ ../fsdoc/tools/stat file | grep -E 'size|flags'
+size:  102400
+flags: 00000000 ()
+$ du -hd 0 file
+100K    file
+$ ls -lah file
+-rw-r--r--  1 pelsen  staff   100K Jun  5 11:55 file
+$ ./build/afsctool -c file
+File is already HFS+/APFS compressed.
+$ ../fsdoc/tools/stat file | grep -E 'size|flags'
+size:  102400
+flags: 00000020 (compressed)
+$ du -hd 0 file
+4.0K    file
+$ ls -lah file
+-rw-r--r--  1 pelsen  staff   100K Jun  5 11:55 file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So, both &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;stat()&lt;/code&gt; syscall return the size of the file contents,
+not of the compressed size on disk. That means that &lt;code class=&quot;highlighter-rouge&quot;&gt;du&lt;/code&gt; must be using some
+other mechanism to get the true file size. However, what we can see is that the
+compressed flag is set on the file.&lt;/p&gt;
+
+&lt;p&gt;To figure out how &lt;code class=&quot;highlighter-rouge&quot;&gt;du&lt;/code&gt; gets the actual on-disk size, I had to take a peek at
+the &lt;a href=&quot;https://github.com/coreutils/coreutils/blob/master/src/du.c&quot;&gt;source code&lt;/a&gt;
+and get a little refresher on the information that &lt;code class=&quot;highlighter-rouge&quot;&gt;stat()&lt;/code&gt; provides. This is
+the struct that the &lt;code class=&quot;highlighter-rouge&quot;&gt;stat()&lt;/code&gt; syscall returns on macOS:&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stat&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* when _DARWIN_FEATURE_64_BIT_INODE is defined */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dev_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_dev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;           &lt;span class=&quot;cm&quot;&gt;/* ID of device containing file */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mode_t&lt;/span&gt;          &lt;span class=&quot;n&quot;&gt;st_mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;          &lt;span class=&quot;cm&quot;&gt;/* Mode of file (see below) */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;nlink_t&lt;/span&gt;         &lt;span class=&quot;n&quot;&gt;st_nlink&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;         &lt;span class=&quot;cm&quot;&gt;/* Number of hard links */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ino_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_ino&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;           &lt;span class=&quot;cm&quot;&gt;/* File serial number */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;uid_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;           &lt;span class=&quot;cm&quot;&gt;/* User ID of the file */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;gid_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_gid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;           &lt;span class=&quot;cm&quot;&gt;/* Group ID of the file */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;dev_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_rdev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;          &lt;span class=&quot;cm&quot;&gt;/* Device ID */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timespec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st_atimespec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;cm&quot;&gt;/* time of last access */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timespec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st_mtimespec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;cm&quot;&gt;/* time of last data modification */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timespec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st_ctimespec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;     &lt;span class=&quot;cm&quot;&gt;/* time of last status change */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timespec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;st_birthtimespec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* time of file creation(birth) */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;off_t&lt;/span&gt;           &lt;span class=&quot;n&quot;&gt;st_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;          &lt;span class=&quot;cm&quot;&gt;/* file size, in bytes */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;blkcnt_t&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;st_blocks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;        &lt;span class=&quot;cm&quot;&gt;/* blocks allocated for file */&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;blksize_t&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;st_blksize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;       &lt;span class=&quot;cm&quot;&gt;/* optimal blocksize for I/O */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;st_flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;         &lt;span class=&quot;cm&quot;&gt;/* user defined flags for file */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;st_gen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;           &lt;span class=&quot;cm&quot;&gt;/* file generation number */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int32_t&lt;/span&gt;         &lt;span class=&quot;n&quot;&gt;st_lspare&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;        &lt;span class=&quot;cm&quot;&gt;/* RESERVED: DO NOT USE! */&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;int64_t&lt;/span&gt;         &lt;span class=&quot;n&quot;&gt;st_qspare&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;     &lt;span class=&quot;cm&quot;&gt;/* RESERVED: DO NOT USE! */&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;st_blocks&lt;/code&gt; member returns the size of the file on disk, in units of
+512 bytes (not in units of &lt;code class=&quot;highlighter-rouge&quot;&gt;st_blksize&lt;/code&gt;!). You can read this field using the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;stat&lt;/code&gt; command:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ stat -f &quot;%b&quot; file
+40
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In this case, the file has 40 blocks of 512 bytes, meaning that it is 20KB in
+size on disk. And that is exactly how &lt;code class=&quot;highlighter-rouge&quot;&gt;du&lt;/code&gt; finds out the size of things. You
+can see at &lt;a href=&quot;https://github.com/coreutils/coreutils/blob/master/src/du.c#L589&quot;&gt;du.c:598&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;duinfo_set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dui&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;apparent_size&lt;/span&gt;
+             &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MAX&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;st_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+             &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uintmax_t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ST_NBLOCKS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ST_NBLOCKSIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time_mtime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_stat_mtime&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+             &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time_atime&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_stat_atime&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+             &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_stat_ctime&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)));&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ST_NBLOCKS&lt;/code&gt; macro fetches the &lt;code class=&quot;highlighter-rouge&quot;&gt;st_blocks&lt;/code&gt; member from the stat struct. The
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ST_NBLOCKSIZE&lt;/code&gt; I’m assuming is defined to be 512 somewhere.&lt;/p&gt;
+
+&lt;h2 id=&quot;compressing-tex-live-installation&quot;&gt;Compressing TeX Live Installation&lt;/h2&gt;
+
+&lt;p&gt;I love using LaTeX for all sorts of things, so I always have a TeX Live
+installation on any of the systems I use. One downside with that is that
+it does install a lot of things, which means that it ends up taking a lot
+of disk space:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ du -hd 0 /usr/local/texlive
+6.6G    /usr/local/texlive
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But surely, I can cut that down by compressing the whole folder. Can’t I?
+Let’s try it. To do this, I used an option to use a worker pool, in order
+to make it a bit quicker.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo ./build/afsctool -c -j4 /usr/local/texlive
+Adding /usr/local/texlive to queue
+Starting 4 worker threads to process queue with 186099 items
+ 10% .. 21% .. 31% .. 41% .. 52% .. 63% .. 73% .. 84% .. 94%
+Processed 186099 entries
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Running this took a minute, but it ended up working out, and reduced the
+size of the folder by 2 GB:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% du -hd 0 /usr/local/texlive/
+4.5G    /usr/local/texlive/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is pretty good already, but I wonder if I can do better than that. The
+tool offers some more advanced options, such as changing the compression level
+or using another algorithm. To re-compress, I needed to decompress them
+first, and then recompress it with a higher compression ratio.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo ./build/afsctool -d /usr/local/texlive
+$ sudo ./build/afsctool -c -j4 -9 /usr/local/texlive
+Adding /usr/local/texlive to queue
+Starting 4 worker threads to process queue with 186099 items
+ 11% .. 21% .. 32% .. 42% .. 53% .. 63% .. 73% .. 84% .. 94%
+Processed 186099 entries
+$ du -hd 0 /usr/local/texlive
+4.5G    /usr/local/texlive
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;However, even with the better compression rate, we still “only” save 2 GB
+(which is 30%, so it’s very good, and I’m not complaining).&lt;/p&gt;
+
+&lt;h2 id=&quot;compressing-homebrew-cellar&quot;&gt;Compressing Homebrew Cellar&lt;/h2&gt;
+
+&lt;p&gt;Homebrew installs all packages into &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/Cellar&lt;/code&gt;, which on my system
+takes up about 14GB. That includes binaries, but also header files and
+documentation which should compress fairly well, I’d guess. That sounds like
+another prime candidate for compression, so I gave that a shot as well.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ du -hd 0 /usr/local/Cellar
+ 14G    /usr/local/Cellar
+$ time sudo ./build/afsctool -c -j4 /usr/local/Cellar
+Adding /usr/local/Cellar to queue
+Starting 4 worker threads to process queue with 291261 items
+ 11% .. 21% .. 31% .. 41% .. 52% .. 62% .. 72% .. 82% .. 92%
+Processed 291261 entries
+sudo ./build/afsctool -c -j4 /usr/local/Cellar  430.99s user 338.29s system 158% cpu 8:06.84 total
+$ du -hd0 /usr/local/Cellar
+5.4G    /usr/local/Cellar
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This saves me a whopping 10GB! That’s really good. With that and the TeX Live
+compression, I’ve saved about 11GB already.&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;APFS supports transparent file compression, just like HFS+. If you’re
+on a system that is low on disk space, compressing static data can be worth
+it and can be done easily with &lt;a href=&quot;https://github.com/RJVB/afsctool&quot;&gt;afsctool&lt;/a&gt;.
+I was able to save about 11GB of storage easily. I might also set up a cron
+job to compress my code projects folder periodically.&lt;/p&gt;
+
+&lt;p&gt;I don’t know why this feature isn’t more well-known. Apple uses it internally
+for some files, but I’m not aware of any way to compress files from the UI. I
+presume it just hasn’t been tested enough yet.&lt;/p&gt;</content><author><name></name></author><summary type="html">In this post, I will take a look at how transparent file compression can be enabled on Apple machines using APFS, how effective it is and how we can get information about the actual size of a file on disk from the kernel.</summary></entry><entry><title type="html">Installing Apple San Francisco Fonts on Linux</title><link href="https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux" rel="alternate" type="text/html" title="Installing Apple San Francisco Fonts on Linux" /><published>2020-06-04T00:00:00+02:00</published><updated>2020-06-04T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux</id><content type="html" xml:base="https://blog.xfbs.net/posts/installing-apple-san-francisco-font-on-linux">&lt;p&gt;Apple has always had a knack for producing and using high-quality typography.
 Not too long ago, they switched the font for their UI from the classic
 Helvetica Neue (a typeface originating from Switzerland, known for precision
 watches) over to their own custom typeface, which they called San Francisco.&lt;/p&gt;

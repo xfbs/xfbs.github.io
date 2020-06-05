@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+
+  <title>
+    
+      APFS Compression on my MacBook &middot; xfbs:blog
+    
+  </title>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Vollkorn|Vollkorn+SC" rel="stylesheet"> -->
+
+  <!-- MathJaX
+    Disabled for now. I will at some point render it server-side or self-host.
+  -->
+  <!--<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML' async></script>-->
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" type="image/svg+xml" size="any" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="https://blog.xfbs.net/feed.xml" title="xfbs:blog" />
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/">
+          <h2 class="nav-title">xfbs:blog</h2>
+        </a>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/links">Links</a></li>
+          <li><a href="/">Posts</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    
+      <br>
+      <time datetime="2020-06-05 00:00:00 +0200">June 05, 2020</time>
+    
+  </div>
+  <h1 class="post-title">APFS Compression on my MacBook</h1>
+  <div class="post-line"></div>
+
+  <p>In this post, I will take a look at how transparent file compression can
+be enabled on Apple machines using APFS, how effective it is and how we can
+get information about the actual size of a file on disk from the kernel.</p>
+
+<p>I’ve tried a lot of different operating systems and hardware manufacturers, but
+like a lot of people in computer science, I eventually got stuck with Apple’s
+MacBook Pro. It’s well-known that Apple knows how much customers love their hardware, and
+so they charge a lot of some things, such as SSD size. I don’t always go for
+the biggest possible options, because as a student I can’t always afford to. 
+As a result of this, I sometimes run into issues with not having enough disk
+space on my system.</p>
+
+<p><img src="/assets/images/mac-disk-usage.png" alt="Disk Usage as reported by Daisy Disk on my MacBook Pro" /></p>
+
+<p>What I do in that case is go through my files and offload things I don’t
+actually need to an external drive. However, looking at the output of
+<a href="https://daisydiskapp.com">Daisy Disk</a>, which is similar to GNOME’s
+<a href="https://wiki.gnome.org/action/show/Apps/DiskUsageAnalyzer?action=show&amp;redirect=Apps%2FBaobab">Disk Usage Analyzer</a>,
+but prettier and commercial, shows that there’s a few gigabytes of stuff
+in my <code class="highlighter-rouge">/usr/local/</code> folder.</p>
+
+<p><img src="/assets/images/mac-disk-usage-usr-local.png" alt="Disk Usage as reported by Daisy Disk on my MacBook Pro" /></p>
+
+<p>That is where macOS’s package manager <a href="https://brew.sh/">Homebrew</a> installs
+things to, and also where my TeX Live installation sits. I figure that these
+are both things that don’t change too often and are therefore prime candidates
+for compression.</p>
+
+<p>Apple’s filesystems – HFS+, and APFS, which has recently replaced the former
+on SSD media – both support transparent compression, meaning that the
+filesystem itself handles the compression, and applications don’t (shouldn’t)
+notice the difference.</p>
+
+<p>There is a tool that we can use to play with it, and try the compression.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/RJVB/afsctool
+$ cd afsctool
+$ brew install google-sparsehash zlib cmake pkgconfig
+$ PKG_CONFIG_PATH=/usr/local/opt/zlib/lib/pkgconfig
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+</code></pre></div></div>
+
+<p>I ran into some issues building this and I had to run this command (taken
+from <a href="https://github.com/PointCloudLibrary/pcl/issues/2601">here</a>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo xcode-select -s /Library/Developer/CommandLineTools
+</code></pre></div></div>
+
+<p>and then recreate the build folder and re-run <code class="highlighter-rouge">cmake</code> in it to make it work,
+I don’t exactly understand why that is, but it worked. The result of that is
+an <code class="highlighter-rouge">afsctool</code> binary, which can be used to play with compression.</p>
+
+<p>First, I figured I’d see how many files in my <code class="highlighter-rouge">/usr/local/</code> are already
+compressed. Who knows, maybe someone already had this idea. The tool accepts
+a <code class="highlighter-rouge">-l</code> switch, which lists files (in a given folder) which are already
+compressed.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./afsctool -l /usr/local/
+</code></pre></div></div>
+
+<p>However, it didn’t return anything, suggesting that I don’t have anything
+that is compressed in there at the moment. That’s a good thing, it means that
+I can try enabling it to see what it does.</p>
+
+<p>First, I decided to try and see what would happen if I compress the repository
+of <code class="highlighter-rouge">afsctool</code> using it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ du -hd 0
+4.4M    .
+$ ./build/afsctool -c .
+/Users/pelsen/Projects/Playground/afsctool/.:
+Number of HFS+/APFS compressed files: 127
+$ du -hd 0
+1.6M    .
+</code></pre></div></div>
+
+<p>So, this already brings an improvement of more than 50% on this repository.</p>
+
+<h2 id="querying-compressed-size">Querying Compressed Size</h2>
+
+<p>The difference in size can be seen with <code class="highlighter-rouge">du</code>. I wonder how <code class="highlighter-rouge">du</code> actually gets
+the true (compressed) size of the file. My first thought was that the <code class="highlighter-rouge">stat()</code>
+syscall might return the compressed size, but verifying that turned out to be
+false.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ dd if=/dev/zero of=file bs=10k count=10
+10+0 records in
+10+0 records out
+102400 bytes transferred in 0.000336 secs (304607610 bytes/sec)
+$ ../fsdoc/tools/stat file | grep -E 'size|flags'
+size:  102400
+flags: 00000000 ()
+$ du -hd 0 file
+100K    file
+$ ls -lah file
+-rw-r--r--  1 pelsen  staff   100K Jun  5 11:55 file
+$ ./build/afsctool -c file
+File is already HFS+/APFS compressed.
+$ ../fsdoc/tools/stat file | grep -E 'size|flags'
+size:  102400
+flags: 00000020 (compressed)
+$ du -hd 0 file
+4.0K    file
+$ ls -lah file
+-rw-r--r--  1 pelsen  staff   100K Jun  5 11:55 file
+</code></pre></div></div>
+
+<p>So, both <code class="highlighter-rouge">ls</code> and the <code class="highlighter-rouge">stat()</code> syscall return the size of the file contents,
+not of the compressed size on disk. That means that <code class="highlighter-rouge">du</code> must be using some
+other mechanism to get the true file size. However, what we can see is that the
+compressed flag is set on the file.</p>
+
+<p>To figure out how <code class="highlighter-rouge">du</code> gets the actual on-disk size, I had to take a peek at
+the <a href="https://github.com/coreutils/coreutils/blob/master/src/du.c">source code</a>
+and get a little refresher on the information that <code class="highlighter-rouge">stat()</code> provides. This is
+the struct that the <code class="highlighter-rouge">stat()</code> syscall returns on macOS:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">stat</span> <span class="p">{</span> <span class="cm">/* when _DARWIN_FEATURE_64_BIT_INODE is defined */</span>
+    <span class="n">dev_t</span>           <span class="n">st_dev</span><span class="p">;</span>           <span class="cm">/* ID of device containing file */</span>
+    <span class="n">mode_t</span>          <span class="n">st_mode</span><span class="p">;</span>          <span class="cm">/* Mode of file (see below) */</span>
+    <span class="n">nlink_t</span>         <span class="n">st_nlink</span><span class="p">;</span>         <span class="cm">/* Number of hard links */</span>
+    <span class="n">ino_t</span>           <span class="n">st_ino</span><span class="p">;</span>           <span class="cm">/* File serial number */</span>
+    <span class="n">uid_t</span>           <span class="n">st_uid</span><span class="p">;</span>           <span class="cm">/* User ID of the file */</span>
+    <span class="n">gid_t</span>           <span class="n">st_gid</span><span class="p">;</span>           <span class="cm">/* Group ID of the file */</span>
+    <span class="n">dev_t</span>           <span class="n">st_rdev</span><span class="p">;</span>          <span class="cm">/* Device ID */</span>
+    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">st_atimespec</span><span class="p">;</span>     <span class="cm">/* time of last access */</span>
+    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">st_mtimespec</span><span class="p">;</span>     <span class="cm">/* time of last data modification */</span>
+    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">st_ctimespec</span><span class="p">;</span>     <span class="cm">/* time of last status change */</span>
+    <span class="k">struct</span> <span class="n">timespec</span> <span class="n">st_birthtimespec</span><span class="p">;</span> <span class="cm">/* time of file creation(birth) */</span>
+    <span class="kt">off_t</span>           <span class="n">st_size</span><span class="p">;</span>          <span class="cm">/* file size, in bytes */</span>
+    <span class="n">blkcnt_t</span>        <span class="n">st_blocks</span><span class="p">;</span>        <span class="cm">/* blocks allocated for file */</span>
+    <span class="n">blksize_t</span>       <span class="n">st_blksize</span><span class="p">;</span>       <span class="cm">/* optimal blocksize for I/O */</span>
+    <span class="kt">uint32_t</span>        <span class="n">st_flags</span><span class="p">;</span>         <span class="cm">/* user defined flags for file */</span>
+    <span class="kt">uint32_t</span>        <span class="n">st_gen</span><span class="p">;</span>           <span class="cm">/* file generation number */</span>
+    <span class="kt">int32_t</span>         <span class="n">st_lspare</span><span class="p">;</span>        <span class="cm">/* RESERVED: DO NOT USE! */</span>
+    <span class="kt">int64_t</span>         <span class="n">st_qspare</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>     <span class="cm">/* RESERVED: DO NOT USE! */</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">st_blocks</code> member returns the size of the file on disk, in units of
+512 bytes (not in units of <code class="highlighter-rouge">st_blksize</code>!). You can read this field using the
+<code class="highlighter-rouge">stat</code> command:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ stat -f "%b" file
+40
+</code></pre></div></div>
+
+<p>In this case, the file has 40 blocks of 512 bytes, meaning that it is 20KB in
+size on disk. And that is exactly how <code class="highlighter-rouge">du</code> finds out the size of things. You
+can see at <a href="https://github.com/coreutils/coreutils/blob/master/src/du.c#L589">du.c:598</a>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">duinfo_set</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">dui</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">apparent_size</span>
+             <span class="o">?</span> <span class="n">MAX</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sb</span><span class="o">-&gt;</span><span class="n">st_size</span><span class="p">)</span>
+             <span class="o">:</span> <span class="p">(</span><span class="kt">uintmax_t</span><span class="p">)</span> <span class="n">ST_NBLOCKS</span> <span class="p">(</span><span class="o">*</span><span class="n">sb</span><span class="p">)</span> <span class="o">*</span> <span class="n">ST_NBLOCKSIZE</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">time_type</span> <span class="o">==</span> <span class="n">time_mtime</span> <span class="o">?</span> <span class="n">get_stat_mtime</span> <span class="p">(</span><span class="n">sb</span><span class="p">)</span>
+             <span class="o">:</span> <span class="n">time_type</span> <span class="o">==</span> <span class="n">time_atime</span> <span class="o">?</span> <span class="n">get_stat_atime</span> <span class="p">(</span><span class="n">sb</span><span class="p">)</span>
+             <span class="o">:</span> <span class="n">get_stat_ctime</span> <span class="p">(</span><span class="n">sb</span><span class="p">)));</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">ST_NBLOCKS</code> macro fetches the <code class="highlighter-rouge">st_blocks</code> member from the stat struct. The
+<code class="highlighter-rouge">ST_NBLOCKSIZE</code> I’m assuming is defined to be 512 somewhere.</p>
+
+<h2 id="compressing-tex-live-installation">Compressing TeX Live Installation</h2>
+
+<p>I love using LaTeX for all sorts of things, so I always have a TeX Live
+installation on any of the systems I use. One downside with that is that
+it does install a lot of things, which means that it ends up taking a lot
+of disk space:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ du -hd 0 /usr/local/texlive
+6.6G    /usr/local/texlive
+</code></pre></div></div>
+
+<p>But surely, I can cut that down by compressing the whole folder. Can’t I?
+Let’s try it. To do this, I used an option to use a worker pool, in order
+to make it a bit quicker.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo ./build/afsctool -c -j4 /usr/local/texlive
+Adding /usr/local/texlive to queue
+Starting 4 worker threads to process queue with 186099 items
+ 10% .. 21% .. 31% .. 41% .. 52% .. 63% .. 73% .. 84% .. 94%
+Processed 186099 entries
+</code></pre></div></div>
+
+<p>Running this took a minute, but it ended up working out, and reduced the
+size of the folder by 2 GB:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% du -hd 0 /usr/local/texlive/
+4.5G    /usr/local/texlive/
+</code></pre></div></div>
+
+<p>This is pretty good already, but I wonder if I can do better than that. The
+tool offers some more advanced options, such as changing the compression level
+or using another algorithm. To re-compress, I needed to decompress them
+first, and then recompress it with a higher compression ratio.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo ./build/afsctool -d /usr/local/texlive
+$ sudo ./build/afsctool -c -j4 -9 /usr/local/texlive
+Adding /usr/local/texlive to queue
+Starting 4 worker threads to process queue with 186099 items
+ 11% .. 21% .. 32% .. 42% .. 53% .. 63% .. 73% .. 84% .. 94%
+Processed 186099 entries
+$ du -hd 0 /usr/local/texlive
+4.5G    /usr/local/texlive
+</code></pre></div></div>
+
+<p>However, even with the better compression rate, we still “only” save 2 GB
+(which is 30%, so it’s very good, and I’m not complaining).</p>
+
+<h2 id="compressing-homebrew-cellar">Compressing Homebrew Cellar</h2>
+
+<p>Homebrew installs all packages into <code class="highlighter-rouge">/usr/local/Cellar</code>, which on my system
+takes up about 14GB. That includes binaries, but also header files and
+documentation which should compress fairly well, I’d guess. That sounds like
+another prime candidate for compression, so I gave that a shot as well.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ du -hd 0 /usr/local/Cellar
+ 14G    /usr/local/Cellar
+$ time sudo ./build/afsctool -c -j4 /usr/local/Cellar
+Adding /usr/local/Cellar to queue
+Starting 4 worker threads to process queue with 291261 items
+ 11% .. 21% .. 31% .. 41% .. 52% .. 62% .. 72% .. 82% .. 92%
+Processed 291261 entries
+sudo ./build/afsctool -c -j4 /usr/local/Cellar  430.99s user 338.29s system 158% cpu 8:06.84 total
+$ du -hd0 /usr/local/Cellar
+5.4G    /usr/local/Cellar
+</code></pre></div></div>
+
+<p>This saves me a whopping 10GB! That’s really good. With that and the TeX Live
+compression, I’ve saved about 11GB already.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>APFS supports transparent file compression, just like HFS+. If you’re
+on a system that is low on disk space, compressing static data can be worth
+it and can be done easily with <a href="https://github.com/RJVB/afsctool">afsctool</a>.
+I was able to save about 11GB of storage easily. I might also set up a cron
+job to compress my code projects folder periodically.</p>
+
+<p>I don’t know why this feature isn’t more well-known. Apple uses it internally
+for some files, but I’m not aware of any way to compress files from the UI. I
+presume it just hasn’t been tested enough yet.</p>
+
+
+</div>
+
+<div class="pagination">
+  
+  
+    <a href="/posts/installing-apple-san-francisco-font-on-linux" class="right arrow">&#8594;</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        <a href="/legal">Legal</a> &middot; 
+        <a href="/privacy">Privacy</a> &middot; 
+        Made with <a href="https://jekyllrb.com">Jekyll</a> using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme &middot;
+        <a href="https://creativecommons.org/licenses/by-sa/4.0/" title="Licensed under Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)">
+          <img title="Creative Commons" src="/assets/images/cc-logo.svg" class="cc-icon" />
+          <img title="Share" src="/assets/images/cc-sa.svg" class="cc-icon" />
+          <img title="Adapt" src="/assets/images/cc-by.svg" class="cc-icon" />
+        </a>
+      </span>
+    </footer>
+  </body>
+</html>
