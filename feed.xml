@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2020-06-05T14:13:59+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">APFS Compression on my MacBook</title><link href="https://blog.xfbs.net/posts/enabling-apfs-compression" rel="alternate" type="text/html" title="APFS Compression on my MacBook" /><published>2020-06-05T00:00:00+02:00</published><updated>2020-06-05T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/enabling-apfs-compression</id><content type="html" xml:base="https://blog.xfbs.net/posts/enabling-apfs-compression">&lt;p&gt;In this post, I will take a look at how transparent file compression can
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="https://blog.xfbs.net/feed.xml" rel="self" type="application/atom+xml" /><link href="https://blog.xfbs.net/" rel="alternate" type="text/html" /><updated>2020-06-05T14:55:00+02:00</updated><id>https://blog.xfbs.net/</id><title type="html">xfbs:blog</title><subtitle>Personal blog of xfbs.</subtitle><entry><title type="html">APFS Compression on my MacBook</title><link href="https://blog.xfbs.net/posts/enabling-apfs-compression" rel="alternate" type="text/html" title="APFS Compression on my MacBook" /><published>2020-06-05T00:00:00+02:00</published><updated>2020-06-05T00:00:00+02:00</updated><id>https://blog.xfbs.net/posts/enabling-apfs-compression</id><content type="html" xml:base="https://blog.xfbs.net/posts/enabling-apfs-compression">&lt;p&gt;In this post, I will take a look at how transparent file compression can
 be enabled on Apple machines using APFS, how effective it is and how we can
 get information about the actual size of a file on disk from the kernel.&lt;/p&gt;
 
@@ -240,6 +240,8 @@ on a system that is low on disk space, compressing static data can be worth
 it and can be done easily with &lt;a href=&quot;https://github.com/RJVB/afsctool&quot;&gt;afsctool&lt;/a&gt;.
 I was able to save about 11GB of storage easily. I might also set up a cron
 job to compress my code projects folder periodically.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/disk-usage-after.png&quot; alt=&quot;Disk Usage reported by Daisy Disk after compression&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I don’t know why this feature isn’t more well-known. Apple uses it internally
 for some files, but I’m not aware of any way to compress files from the UI. I
